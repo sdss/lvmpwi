@@ -46,10 +46,10 @@ def build(lvmt_root:str, use_cache: bool):
 def start(name: str, with_ui: bool, lvmt_root:str):
     lvmt_image = f"localhost/{lvmt_image_name}"
 
-    run_base = f"--rm -t --name {name}"
+    run_base = f"--rm -t --name {name} --network=host"
     if with_ui and os.environ.get("DISPLAY"):
         system_xauthority=PosixPath('~/.Xauthority').expanduser()
-        run_base +=  f" --network=host -e DISPLAY -v {system_xauthority}:/root/.Xauthority:Z --ipc=host"
+        run_base +=  f" -e DISPLAY -v {system_xauthority}:/root/.Xauthority:Z --ipc=host"
         if os.path.exists('/dev/dri'):
             run_base +=  ' --device /dev/dri'
     else:
