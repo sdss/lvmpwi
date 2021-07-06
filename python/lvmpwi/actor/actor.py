@@ -61,7 +61,7 @@ class lvmpwi(AMQPActor):
 
         instance = super(lvmpwi, cls).from_config(config, *args, **kwargs)
 
-#        instance.log.debug("Hello world")
+        instance.log.info("Hello world")
 
         assert isinstance(instance, lvmpwi)
         assert isinstance(instance.config, dict)

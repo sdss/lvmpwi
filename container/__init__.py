@@ -14,11 +14,6 @@ import shlex
 import click
 from pathlib import PosixPath
 
-#from podman import PodmanClient
-#uri = "unix:///run/user/1000/podman/podman.sock"
-#podman container exists ubuntu_lvmt_pwi # 0=True, 1=False
-
-
 container_bin = 'podman'
 lvmt_root = os.environ["PWD"]
 lvmt_image_name = 'ubuntu_lvmt_pwi'

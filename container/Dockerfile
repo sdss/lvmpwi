@@ -34,7 +34,9 @@ RUN apt-get update \
         mono-devel \
         mono-basic-dbg
         
-    
+
+RUN apt install -y python3-pip python3-toml git
+        
 EXPOSE 3389/tcp
 
 WORKDIR /root/lvmt

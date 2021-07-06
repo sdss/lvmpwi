@@ -42,6 +42,11 @@ use_xrdp() {
     fluxbox &
 }
 
+start_actor() {
+    python3 setup.py install
+    python3 $LVMT_PATH/python/lvmpwi/__main__.py -c $LVMT_PATH/python/lvmpwi/etc/lvmpwi.yml start 
+}
+
 if [ ! -d $LVMT_PATH/pwi-$PWI_VERSION ]; then
     download_pwi4
 fi
@@ -50,8 +55,10 @@ setup_pwi4
 
 if [ -z $DISPLAY ]; then
     use_xrdp
-    max_pwi4
+    max_pwi4 &
 fi
+
+start_actor & 
 
 start_pwi4
 

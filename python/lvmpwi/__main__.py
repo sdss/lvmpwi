@@ -25,7 +25,7 @@ from lvmpwi.actor.actor import lvmpwi as PwiActor
 )
 @click.pass_context
 def lvmpwi(ctx, config_file, verbose):
-    """Nps controller"""
+    """pwi controller"""
 
     ctx.obj = {"verbose": verbose, "config_file": config_file}
 
@@ -35,6 +35,7 @@ def lvmpwi(ctx, config_file, verbose):
 @cli_coro
 async def actor(ctx):
     """Runs the actor."""
+
     default_config_file = os.path.join(os.path.dirname(__file__), "etc/lvmpwi.yml")
     config_file = ctx.obj["config_file"] or default_config_file
     
@@ -48,4 +49,4 @@ async def actor(ctx):
     await lvmpwi_obj.run_forever()
 
 if __name__ == "__main__":
-    PwiActor()
+    lvmpwi()
