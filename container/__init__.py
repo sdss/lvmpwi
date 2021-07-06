@@ -23,8 +23,11 @@ container_bin = 'podman'
 lvmt_root = os.environ["PWD"]
 lvmt_image_name = 'ubuntu_lvmt_pwi'
 
-default_pwi = 'lvm_pwi'
+default_pwi = 'pwi'
 
+# podman run --rm -ti --name pwi --network=host -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z --device /dev/dri -v ~/.Xauthority:/root/.Xauthority:Z  -e PWI_NAME=pwi localhost/ubuntu_lvmt_pwi
+
+# podman run --rm -ti --name pwi -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z -e PWI_NAME=pwi -p 3389 localhost/ubuntu_lvmt_pwi
 
 def isRunning(name: str = default_pwi):
     command = subprocess.run(shlex.split(f"{container_bin} container exists {name}"))
@@ -43,15 +46,22 @@ def build(lvmt_root:str, use_cache: bool):
 
 @click.command()   
 @click.option("--lvmt_root", default=lvmt_root, type=str)
+@click.option("--with-ui/--without-ui", default=True)
 @click.option("--name", "-n", default=default_pwi, type=str)
-def start(name: str, lvmt_root:str):
+def start(name: str, with_ui: bool, lvmt_root:str):
     lvmt_image = f"localhost/{lvmt_image_name}"
 
-    run_base = f"--rm -t --name {name} --network=host -v /dev:/dev:rslave"
+    run_base = f"--rm -t --name {name}"
+    if with_ui and os.environ.get("DISPLAY"):
+        system_xauthority=PosixPath('~/.Xauthority').expanduser()
+        run_base +=  f" --network=host -e DISPLAY -v {system_xauthority}:/root/.Xauthority:Z --ipc=host"
+        if os.path.exists('/dev/dri'):
+            run_base +=  ' --device /dev/dri'
+    else:
+        run_base +=  f" -p 3389"
+        
+#    run_base += "-v /dev:/dev:rslave"
     system_xauthority=PosixPath('~/.Xauthority').expanduser()
-    run_base +=  f" -e DISPLAY -v {system_xauthority}:/root/.Xauthority:Z --ipc=host"
-    if os.path.exists('/dev/dri'):
-        run_base +=  ' --device /dev/dri'
     run_pwi = f"-v {lvmt_root}:/root/lvmt:Z -e PWI_NAME={name}"
     run = f"{container_bin} run {run_base} {run_pwi} {lvmt_image}"
     print(run)
