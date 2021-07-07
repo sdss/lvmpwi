@@ -54,8 +54,14 @@ def start(name: str, with_ui: bool, lvmt_root:str):
             run_base +=  ' --device /dev/dri'
     else:
         run_base +=  f" -p 3389"
-        
-#    run_base += "-v /dev:/dev:rslave"
+
+    ## Ugly hack - fixme with udev rule
+    #if os.path.exists('/dev/ttyACM0'):
+    #    run_base +=  ' --device /dev/ttyACM0  --device /dev/ttyACM1'
+    
+    # doesnt work on linux
+    run_base += "-v /dev:/dev:rslave"
+    
     system_xauthority=PosixPath('~/.Xauthority').expanduser()
     run_pwi = f"-v {lvmt_root}:/root/lvmt:Z -e PWI_NAME={name}"
     run = f"{container_bin} run {run_base} {run_pwi} {lvmt_image}"
