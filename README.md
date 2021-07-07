@@ -69,7 +69,7 @@ Some linux distributions do not have python >= 3.7 as the standard python3 versi
     poetry run container_stop
     # run container with rdp
     poetry run container_start --without-ui
-    # linux ( should also work under windows with MS rdesktop)
+    # linux ( should also work under windows with MS rdesktop) Password: lvmt
     xfreerdp  +glyph-cache /relax-order-checks /v:YOUR_HOST
     
 ### Run tests 
