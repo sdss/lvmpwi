@@ -43,7 +43,7 @@ use_xrdp() {
 }
 
 start_actor() {
-    python3 setup.py install
+    sleep 1
     python3 $LVMT_PATH/python/lvmpwi/__main__.py -c $LVMT_PATH/python/lvmpwi/etc/lvmpwi.yml start 
 }
 

@@ -13,7 +13,8 @@ module_package_include = module_tool_poetry['include']
 
 module_install_requires = [k+v.replace("^","!=").replace("*","") 
                            if type(v) == str else k+v['version'].replace("^","!=").replace("*","")
-                                 for (k,v) in module_tool_poetry['dependencies'].items()]
+                                 for (k,v) in module_tool_poetry['dependencies'].items() 
+                                     if k != "python"]
 
 module_devel_requires = [k+v.replace("^","!=").replace("*","") 
                            if type(v) == str else k+v['version'].replace("^","!=").replace("*","")
