@@ -60,7 +60,7 @@ def start(name: str, with_ui: bool, lvmt_root:str):
     #    run_base +=  ' --device /dev/ttyACM0  --device /dev/ttyACM1'
     
     # doesnt work on linux
-    run_base += "-v /dev:/dev:rslave"
+    run_base += " -v /dev:/dev:rslave"
     
     system_xauthority=PosixPath('~/.Xauthority').expanduser()
     run_pwi = f"-v {lvmt_root}:/root/lvmt:Z -e PWI_NAME={name}"

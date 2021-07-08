@@ -3,11 +3,13 @@ FROM ubuntu:20.04
 ## Get some karma ##
 MAINTAINER Florian Briegel, briegel@mpia.de
 
+
 # podman  build --tag ubuntu_lvmt_pwi4 --rm lvmt_pwi4
 
 # podman run --rm -ti --name pwi --network=host -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z --device /dev/dri -v ~/.Xauthority:/root/.Xauthority:Z  -e PWI_NAME=pwi localhost/ubuntu_lvmt_pwi
 
 # podman run --rm -ti --name pwi -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z -e PWI_NAME=pwi -p 3389 localhost/ubuntu_lvmt_pwi
+
 
 RUN apt-get update && \
     DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends software-properties-common && \
@@ -41,8 +43,15 @@ RUN apt install -y  python3-setuptools python3-pip python3-toml git && \
     cd lvmpwi && \
     python3 setup.py install ) && \
     rm -rf lvmpwi
-    
-    
+
+ENV PWI_VERSION=4.0.9beta21
+ENV PWI_PATH=/opt/pwi-$PWI_VERSION
+
+RUN mkdir -p $PWI_PATH && \
+    wget http://planewave.com/files/software/PWI4/pwi-$PWI_VERSION.tar.gz && \
+    (cd ${PWI_PATH%/*} && tar xzf /pwi-$PWI_VERSION.tar.gz) && \
+    rm /pwi-$PWI_VERSION.tar.gz
+
         
 EXPOSE 3389/tcp
 

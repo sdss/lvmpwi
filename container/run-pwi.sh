@@ -1,20 +1,7 @@
-#!/usr/bin/bash -l
+#!/usr/bin/bash
 
 LVMT_PATH=/root/lvmt
 LVMT_CONFIG_PATH=$LVMT_PATH/config/lvm/$PWI_NAME
-
-PATH=$LVMT_PATH/scripts:$PATH
-PYTHONPATH=$LVMT_PATH/python/:$PYTHONPATH
-
-PWI_VERSION=4.0.9beta21
-
-
-download_pwi4() {
-    mkdir -p $LVMT_PATH/3rdparty/
-    test -e $LVMT_PATH/3rdparty/pwi-$PWI_VERSION.tar.gz || wget http://planewave.com/files/software/PWI4/pwi-$PWI_VERSION.tar.gz -O $LVMT_PATH/3rdparty/pwi-$PWI_VERSION.tar.gz
-    echo unpacking ...
-    (cd $LVMT_PATH/ && tar xzf $LVMT_PATH/3rdparty/pwi-$PWI_VERSION.tar.gz)
-}
 
 setup_pwi4() {
     mkdir -p ~/PlaneWave\ Instruments/PWI4/
@@ -23,7 +10,7 @@ setup_pwi4() {
 }
 
 start_pwi4() {
-    cd ~/lvmt/pwi-$PWI_VERSION/
+    cd $PWI_PATH
     ./run-pwi4
 }
 
@@ -43,13 +30,10 @@ use_xrdp() {
 }
 
 start_actor() {
+    # lets give the pwi sw some time to startup
     sleep 1
     python3 $LVMT_PATH/python/lvmpwi/__main__.py -c $LVMT_PATH/python/lvmpwi/etc/lvmpwi.yml start 
 }
-
-if [ ! -d $LVMT_PATH/pwi-$PWI_VERSION ]; then
-    download_pwi4
-fi
 
 setup_pwi4
 
