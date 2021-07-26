@@ -4,6 +4,7 @@ ENDLESS=true
 LANG=C
 SERVER='192.168.80.55'
 BUSID='4-1'
+TTYDEV=/dev/ttyACM0
 
 trap_exit() {
     ENDLESS=false
@@ -18,10 +19,17 @@ trap trap_exit SIGTERM
 trap trap_exit SIGKILL
 
 while $ENDLESS; do
+  if [ ! -c "$TTYDEV" ]; then
     if ! /usr/sbin/usbip port | /usr/bin/grep "usbip:.*${SERVER}.*${BUSID}$" &> /dev/null; then
-        /usr/sbin/usbip attach -r ${SERVER} -b ${BUSID}
+      /usr/sbin/usbip attach -r ${SERVER} -b ${BUSID} &> /dev/null
+      rc=$?
+      if test $rc -eq 0; then
+          sleep 0.7
+          /usr/bin/chmod 666 /dev/ttyACM[01];
+      fi
     fi
-    sleep 5
+  fi
+  sleep 1
 done
 
 trap_exit

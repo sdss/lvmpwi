@@ -7,5 +7,5 @@ Serverside:
 Clientside:
 
  /etc/systemd/system/usbip_planewave.service
- /usr/local/bin/usbip_planewave.sh
+ /usr/local/sbin/usbip_planewave.sh
 
