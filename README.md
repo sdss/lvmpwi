@@ -86,6 +86,7 @@ Some linux distributions do not have python >= 3.7 as the standard python3 versi
     poetry run python
     
     # see also lvmpwi/python/lvmpwi/pwi/pwi4_client_demo.py
+    # the documentation of the api is inside the code.
     import time
     from pwi4_client import PWI
     pwi4 = PWI4()
