@@ -1,0 +1,2 @@
+ACTION=="add", SUBSYSTEM=="tty", KERNEL=="ttyACM1", ATTRS{idVendor}=="1cbe", ATTRS{idProduct}=="0267", PROGRAM="/usr/sbin/usbip bind -b 4-1"
+

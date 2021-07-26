@@ -1,0 +1,14 @@
+[Unit]
+Description=Connects remote Planewave USB device over IP
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+Restart=on-failure
+User=root
+Group=root
+ExecStart=/usr/local/sbin/usbip_planewave.sh
+
+[Install]
+WantedBy=multi-user.target

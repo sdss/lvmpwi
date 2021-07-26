@@ -1,0 +1,11 @@
+
+Serverside:
+
+ /etc/systemd/system/usbipd.service
+ /etc/udev/rules.d/20-planewave.rules
+
+Clientside:
+
+ /etc/systemd/system/usbip_planewave.service
+ /usr/local/bin/usbip_planewave.sh
+
