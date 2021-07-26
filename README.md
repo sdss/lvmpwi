@@ -89,7 +89,7 @@ Some linux distributions do not have python >= 3.7 as the standard python3 versi
     # see also lvmpwi/python/lvmpwi/pwi/pwi4_client_demo.py²
     # the documentation of the api is inside the code.
     import time
-    from pwi4_client import PWI
+    from pwi4_client import PWI4
     pwi4 = PWI4()
     s = pwi4.status()
     if not s.mount.is_connected:
