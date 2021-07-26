@@ -80,11 +80,12 @@ Some linux distributions do not have python >= 3.7 as the standard python3 versi
     poetry run pytest -p no:logging -s -v --runslow
     
 ### Run native pwi client interface
-The native pwi interface can be found in '''lvmpwipython/lvmpwi/pwi''', there is an example from planewave '''lvmpwipython/lvmpwi/pwi/pwi4_client_demo.py'''
-    # run python with path 
+
+    # run python with path to native pwi interface
     export PYTHONPATH=python/lvmpwi/pwi/:$PYTHONPATH
     poetry run python
     
+    # see also lvmpwi/python/lvmpwi/pwi/pwi4_client_demo.py
     import time
     from pwi4_client import PWI
     pwi4 = PWI4()
