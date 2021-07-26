@@ -81,11 +81,12 @@ Some linux distributions do not have python >= 3.7 as the standard python3 versi
     
 ### Run native pwi client interface
 
-    # run python with path to native pwi interface
+
+    # run python with path to native pwi interface¹
     export PYTHONPATH=python/lvmpwi/pwi/:$PYTHONPATH
     poetry run python
     
-    # see also lvmpwi/python/lvmpwi/pwi/pwi4_client_demo.py
+    # see also lvmpwi/python/lvmpwi/pwi/pwi4_client_demo.py²
     # the documentation of the api is inside the code.
     import time
     from pwi4_client import PWI
@@ -95,8 +96,9 @@ Some linux distributions do not have python >= 3.7 as the standard python3 versi
         print ("Connecting to mount...")
         s = pwi4.mount_connect()
         print ("Mount connected:", s.mount.is_connected)
-
-   
+        
+¹ [pwi4_client.py](https://github.com/sdss/lvmpwi/blob/main/python/lvmpwi/pwi/pwi4_client.py) 
+² [pwi4_client_demo.py](https://github.com/sdss/lvmpwi/blob/main/python/lvmpwi/pwi/pwi4_client_demo.py) 
     
 ### Publish
     # publish to pypi
