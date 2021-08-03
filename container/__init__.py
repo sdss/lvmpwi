@@ -43,10 +43,11 @@ def build(lvmt_root:str, use_cache: bool):
 @click.option("--lvmt_root", default=lvmt_root, type=str)
 @click.option("--with-ui/--without-ui", default=True)
 @click.option("--name", "-n", default=default_pwi, type=str)
-def start(name: str, with_ui: bool, lvmt_root:str):
+@click.option("--debug", "-n", default=False, type=bool)
+def start(name: str, with_ui: bool, lvmt_root:str, debug:bool):
     lvmt_image = f"localhost/{lvmt_image_name}"
 
-    run_base = f"--rm -t --name {name} --network=host"
+    run_base = f"--rm -d --name {name} --network=host"
     if with_ui and os.environ.get("DISPLAY"):
         system_xauthority=PosixPath('~/.Xauthority').expanduser()
         run_base +=  f" -e DISPLAY -v {system_xauthority}:/root/.Xauthority:Z --ipc=host"
@@ -54,22 +55,25 @@ def start(name: str, with_ui: bool, lvmt_root:str):
             run_base +=  ' --device /dev/dri'
     else:
         run_base +=  f" -p 3389"
+        
+    if debug:
+        run_base +=  f" -p 8220"
 
     ## Ugly hack - fixme with udev rule
     #if os.path.exists('/dev/ttyACM0'):
     #    run_base +=  ' --device /dev/ttyACM0  --device /dev/ttyACM1'
     
-    # doesnt work on linux
+    # doesnt work on opensuse
     run_base += " -v /dev:/dev:rslave"
     
     system_xauthority=PosixPath('~/.Xauthority').expanduser()
     run_pwi = f"-v {lvmt_root}:/root/lvmt:Z -e PWI_NAME={name}"
     run = f"{container_bin} run {run_base} {run_pwi} {lvmt_image}"
     print(run)
-    child = pexpect.spawn(run)
-    child.expect('BSC loaded')
-    assert isRunning(name) == True
-    
+    #child = pexpect.spawn(run)
+    #child.expect('BSC loaded')
+    #assert isRunning(name) == True
+    command = subprocess.run(shlex.split(f"{run}"))
 
 @click.command()   
 @click.option("--name", "-n", default=default_pwi, type=str)

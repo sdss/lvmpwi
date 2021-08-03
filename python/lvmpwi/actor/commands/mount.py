@@ -175,7 +175,7 @@ async def goto_ra_dec_j2000(command: Command, pwi: PWI4, alt_d: float, az_d: flo
 # pwi4 command: mount_offset(self, **kwargs):
 
 @parser.command()
-async def goto_ra_dec_j2000(command: Command, pwi: PWI4):
+async def mount_offset(command: Command, pwi: PWI4):
     """mount mount_offset
      
         One or more of the following offsets can be specified as a keyword argument:
