@@ -54,6 +54,7 @@ async def disconnect(command: Command, pwi: PWI4):
 # pwi4 command: mount_enable(self, axisNum):
 
 @parser.command()
+@click.argument("AXIS", type=int)
 async def enable(command: Command, pwi: PWI4, axis: int):
     """mount enable axis"""
 
