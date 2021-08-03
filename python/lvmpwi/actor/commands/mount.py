@@ -54,7 +54,7 @@ async def disconnect(command: Command, pwi: PWI4):
 # pwi4 command: mount_enable(self, axisNum):
 
 @parser.command()
-async def enable(command: Command, pwi: PWI4):
+async def enable(command: Command, pwi: PWI4, axis: int):
     """mount enable axis"""
 
     try:
@@ -80,7 +80,7 @@ async def disable(command: Command, pwi: PWI4, axis: int):
 
         status = pwi.mount_disable(axis)
         command.info(
-            isenabled = status.mount.is_enabled
+            isenabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
         )
     
     except Exception as ex:
