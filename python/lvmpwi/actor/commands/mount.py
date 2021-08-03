@@ -176,7 +176,7 @@ async def goto_ra_dec_j2000(command: Command, pwi: PWI4, alt_d: float, az_d: flo
 
 @parser.command()
 async def goto_ra_dec_j2000(command: Command, pwi: PWI4):
-     """mount mount_offset
+    """mount mount_offset
      
         One or more of the following offsets can be specified as a keyword argument:
         AXIS_reset: Clear all position and rate offsets for this axis. Set this to any value to issue the command.
