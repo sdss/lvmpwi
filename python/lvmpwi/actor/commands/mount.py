@@ -61,14 +61,7 @@ async def enable(command: Command, pwi: PWI4):
 
         status = pwi.mount_enable(axis)
         command.info(
-            isenabled = status.mount.axis0.is_enabled and status.mount.axis1.is_enabled,
-            axis0 = {
-                'is_enabled': status.mount.axis0.is_enabled,
-            },
-            axis1 = {
-                'is_enabled': status.mount.axis1.is_enabled,
-            },
-
+            isenabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
         )
     
     except Exception as ex:
