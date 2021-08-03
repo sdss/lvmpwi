@@ -21,7 +21,6 @@ async def connect(command: Command, pwi: PWI4):
     """mount connect"""
 
     try:
-
         status = pwi.mount_connect()
         command.info(
             isconnected = status.mount.is_connected
@@ -39,8 +38,8 @@ async def disconnect(command: Command, pwi: PWI4):
     """mount disconnect"""
 
     try:
-
-        status = pwi.mount_disconnect()
+        pwi.mount_disconnect()
+        status = pwi.mount_connect()
         command.info(
             isconnected = status.mount.is_connected
         )
@@ -59,8 +58,9 @@ async def enable(command: Command, pwi: PWI4, axis: int):
     """mount enable axis"""
 
     try:
-
-        status = pwi.mount_enable(axis)
+        # we do ignore the false status returned
+        pwi.mount_enable(axis)
+        status = pwi.mount_connect()
         command.info(
             isenabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
         )
@@ -78,8 +78,9 @@ async def disable(command: Command, pwi: PWI4, axis: int):
     """mount disable axis"""
 
     try:
-
-        status = pwi.mount_disable(axis)
+        # we do ignore the false status returned
+        pwi.mount_disable(axis)
+        status = pwi.mount_connect()
         command.info(
             isenabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
         )
@@ -97,7 +98,6 @@ async def stop(command: Command, pwi: PWI4):
     """mount stop"""
 
     try:
-
         status = pwi.mount_stop()
         command.info(
             isenabled = status.mount.is_enabled
@@ -118,7 +118,6 @@ async def goto_ra_dec_apparent(command: Command, pwi: PWI4, ra_h: float, deg_d: 
     """mount goto_ra_dec_apparent"""
 
     try:
-
         status = pwi.mount_goto_ra_dec_apparent(ra_h, deg_d)
         command.info(
             dec_apparent_degs = status.mount.dec_apparent_degs,
@@ -140,7 +139,6 @@ async def goto_ra_dec_j2000(command: Command, pwi: PWI4, ra_h: float, deg_d: flo
     """mount goto_ra_dec_j2000"""
 
     try:
-
         status = pwi.mount_goto_ra_dec_j2000(ra_h, deg_d)
         command.info(
             dec_j2000_degs = status.mount.dec_j2000_degs,
@@ -161,7 +159,6 @@ async def goto_ra_dec_j2000(command: Command, pwi: PWI4, alt_d: float, az_d: flo
     """mount goto_alt_az"""
 
     try:
-
         status = pwi.mount_goto_alt_az(alt_d, az_d)
         command.info(
             altitude_degs = status.mount.altitude_degs,
@@ -216,7 +213,6 @@ async def park(command: Command, pwi: PWI4):
     """mount park"""
 
     try:
-
         status = pwi.mount_park()
         command.info(
             altitude_degs = status.mount.altitude_degs,
@@ -235,7 +231,6 @@ async def park_here(command: Command, pwi: PWI4):
     """mount park"""
 
     try:
-
         status = pwi.mount_park_here()
         command.info(
             altitude_degs = status.mount.altitude_degs,
@@ -254,7 +249,6 @@ async def tracking_on(command: Command, pwi: PWI4):
     """mount tracking_on"""
 
     try:
-
         status = pwi.mount_tracking_on()
         command.info(
             is_tracking = status.mount.is_tracking,
@@ -272,7 +266,6 @@ async def tracking_off(command: Command, pwi: PWI4):
     """mount tracking_off"""
 
     try:
-
         status = pwi.mount_tracking_off()
         command.info(
             is_tracking = status.mount.is_tracking,
