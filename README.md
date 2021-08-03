@@ -66,6 +66,8 @@ Some linux distributions do not have python >= 3.7 as the standard python3 versi
 ### Run container
 
     poetry run container_start
+    # with pwi4 port 8220 exposed
+    poetry run container_start --debug
     poetry run container_stop
     # run container with rdp
     poetry run container_start --without-ui
