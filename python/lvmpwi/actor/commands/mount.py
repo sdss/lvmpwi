@@ -38,8 +38,7 @@ async def disconnect(command: Command, pwi: PWI4):
     """mount disconnect"""
 
     try:
-        pwi.mount_disconnect()
-        status = pwi.mount_connect()
+        status = pwi.mount_disconnect()
         command.info(
             isconnected = status.mount.is_connected
         )
@@ -60,7 +59,7 @@ async def enable(command: Command, pwi: PWI4, axis: int):
     try:
         # we do ignore the false status returned
         pwi.mount_enable(axis)
-        status = pwi.mount_connect()
+        status = pwi.status()
         command.info(
             isenabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
         )
@@ -80,7 +79,7 @@ async def disable(command: Command, pwi: PWI4, axis: int):
     try:
         # we do ignore the false status returned
         pwi.mount_disable(axis)
-        status = pwi.mount_connect()
+        status = pwi.status()
         command.info(
             isenabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
         )
