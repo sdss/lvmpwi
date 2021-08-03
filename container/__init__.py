@@ -74,6 +74,7 @@ def start(name: str, with_ui: bool, lvmt_root:str, debug:bool):
     #child.expect('BSC loaded')
     #assert isRunning(name) == True
     command = subprocess.run(shlex.split(f"{run}"))
+    logs = subprocess.run(shlex.split(f"podman logs -f {name}"))
 
 @click.command()   
 @click.option("--name", "-n", default=default_pwi, type=str)

@@ -33,6 +33,7 @@ RUN apt-get update \
         eterm \
         fluxbox \
         xrdp \
+        libgtk2.0 \
         mono-devel \
         mono-basic-dbg
         
