@@ -54,15 +54,21 @@ async def disconnect(command: Command, pwi: PWI4):
 # pwi4 command: mount_enable(self, axisNum):
 
 @parser.command()
-@click.argument("AXIS", type=int)
-async def enable(command: Command, pwi: PWI4, axis: int):
+async def enable(command: Command, pwi: PWI4):
     """mount enable axis"""
 
     try:
 
         status = pwi.mount_enable(axis)
         command.info(
-            isenabled = status.mount.is_enabled
+            isenabled = status.mount.axis0.is_enabled and status.mount.axis1.is_enabled,
+            axis0 = {
+                'is_enabled': status.mount.axis0.is_enabled,
+            },
+            axis1 = {
+                'is_enabled': status.mount.axis1.is_enabled,
+            },
+
         )
     
     except Exception as ex:
@@ -92,14 +98,93 @@ async def disable(command: Command, pwi: PWI4, axis: int):
 
 # pwi4 command: mount_stop(self):
 
+@parser.command()
+async def stop(command: Command, pwi: PWI4):
+    """mount stop"""
+
+    try:
+
+        status = pwi.mount_stop()
+        command.info(
+            isenabled = status.mount.is_enabled
+        )
+    
+    except Exception as ex:
+        return command.fail(error=str(ex))
+
+    return command.finish("done")
+
+
 # pwi4 command: mount_goto_ra_dec_apparent(self, ra_hours, dec_degs):
+
+@parser.command()
+@click.argument("RA_H", type=float)
+@click.argument("DEG_D", type=float)
+async def goto_ra_dec_apparent(command: Command, pwi: PWI4, ra_h: float, deg_d: float):
+    """mount goto_ra_dec_apparent"""
+
+    try:
+
+        status = pwi.mount_goto_ra_dec_apparent(ra_h, deg_d)
+        command.info(
+            dec_apparent_degs = status.mount.dec_apparent_degs,
+            ra_apparent_hours = status.mount.ra_apparent_hours,
+        )
+    
+    except Exception as ex:
+        return command.fail(error=str(ex))
+
+    return command.finish("done")
+
 
 # pwi4 command: mount_goto_ra_dec_j2000(self, ra_hours, dec_degs):
 
+@parser.command()
+@click.argument("RA_H", type=float)
+@click.argument("DEG_D", type=float)
+async def goto_ra_dec_j2000(command: Command, pwi: PWI4, ra_h: float, deg_d: float):
+    """mount goto_ra_dec_j2000"""
+
+    try:
+
+        status = pwi.mount_goto_ra_dec_j2000(ra_h, deg_d)
+        command.info(
+            dec_j2000_degs = status.mount.dec_j2000_degs,
+            ra_j2000_hours = status.mount.ra_j2000_hours,
+        )
+    
+    except Exception as ex:
+        return command.fail(error=str(ex))
+
+    return command.finish("done")
+
 # pwi4 command: mount_goto_alt_az(self, alt_degs, az_degs):
 
+@parser.command()
+@click.argument("ALT_D", type=float)
+@click.argument("AZ_D", type=float)
+async def goto_ra_dec_j2000(command: Command, pwi: PWI4, alt_d: float, az_d: float):
+    """mount goto_alt_az"""
+
+    try:
+
+        status = pwi.mount_goto_alt_az(alt_d, az_d)
+        command.info(
+            altitude_degs = status.mount.altitude_degs,
+            azimuth_degs = status.mount.azimuth_degs,
+        )
+    
+    except Exception as ex:
+        return command.fail(error=str(ex))
+
+    return command.finish("done")
+
 # pwi4 command: mount_offset(self, **kwargs):
-"""
+
+@parser.command()
+async def goto_ra_dec_j2000(command: Command, pwi: PWI4):
+     """mount mount_offset
+     
         One or more of the following offsets can be specified as a keyword argument:
         AXIS_reset: Clear all position and rate offsets for this axis. Set this to any value to issue the command.
         AXIS_stop_rate: Set any active offset rate to zero. Set this to any value to issue the command.
@@ -120,14 +205,89 @@ async def disable(command: Command, pwi: PWI4, axis: int):
         mount_offset(axis0_add_arcsec=-30, axis0_set_rate_arcsec_per_sec=1, transverse_reset=0)
         """
 
+    try:
+        pass
+#        status = pwi.mount_mount_offset(alt_d, az_d)
+    
+    except Exception as ex:
+        return command.fail(error=str(ex))
+
+    return command.finish("done")
+
 
 # pwi4 command: mount_park(self):
 
+@parser.command()
+async def park(command: Command, pwi: PWI4):
+    """mount park"""
+
+    try:
+
+        status = pwi.mount_park()
+        command.info(
+            altitude_degs = status.mount.altitude_degs,
+            azimuth_degs = status.mount.azimuth_degs,
+        )
+    
+    except Exception as ex:
+        return command.fail(error=str(ex))
+
+    return command.finish("done")
+
 # pwi4 command: mount_set_park_here(self):
+
+@parser.command()
+async def park_here(command: Command, pwi: PWI4):
+    """mount park"""
+
+    try:
+
+        status = pwi.mount_park_here()
+        command.info(
+            altitude_degs = status.mount.altitude_degs,
+            azimuth_degs = status.mount.azimuth_degs,
+        )
+    
+    except Exception as ex:
+        return command.fail(error=str(ex))
+
+    return command.finish("done")
 
 # pwi4 command: mount_tracking_on(self):
 
+@parser.command()
+async def tracking_on(command: Command, pwi: PWI4):
+    """mount tracking_on"""
+
+    try:
+
+        status = pwi.mount_tracking_on()
+        command.info(
+            is_tracking = status.mount.is_tracking,
+        )
+    
+    except Exception as ex:
+        return command.fail(error=str(ex))
+
+    return command.finish("done")
+
 # pwi4 command: mount_tracking_off(self):
+
+@parser.command()
+async def tracking_off(command: Command, pwi: PWI4):
+    """mount tracking_off"""
+
+    try:
+
+        status = pwi.mount_tracking_off()
+        command.info(
+            is_tracking = status.mount.is_tracking,
+        )
+    
+    except Exception as ex:
+        return command.fail(error=str(ex))
+
+    return command.finish("done")
 
 # pwi4 command: mount_follow_tle(self, tle_line_1, tle_line_2, tle_line_3):
 
