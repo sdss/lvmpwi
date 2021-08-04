@@ -5,7 +5,10 @@
 # @Filename: __init__.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+
 from __future__ import annotations
+
+from math import nan
 
 import click
 from clu.command import Command
@@ -154,7 +157,7 @@ async def goto_ra_dec_j2000(command: Command, pwi: PWI4, ra_h: float, deg_d: flo
 @parser.command()
 @click.argument("ALT_D", type=float)
 @click.argument("AZ_D", type=float)
-async def goto_ra_dec_j2000(command: Command, pwi: PWI4, alt_d: float, az_d: float):
+async def goto_alt_az_j2000(command: Command, pwi: PWI4, alt_d: float, az_d: float):
     """mount goto_alt_az"""
 
     try:
@@ -172,8 +175,36 @@ async def goto_ra_dec_j2000(command: Command, pwi: PWI4, alt_d: float, az_d: flo
 # pwi4 command: mount_offset(self, **kwargs):
 
 @parser.command()
-async def mount_offset(command: Command, pwi: PWI4):
-    """mount mount_offset
+# AXIS_reset
+@click.option("--ra_reset", type=float, default=nan)
+@click.option("--dec_reset", type=float, default=nan)
+@click.option("--axis0_reset", type=float, default=nan)
+@click.option("--axis1_reset", type=float, default=nan)
+@click.option("--path_reset", type=float, default=nan)
+@click.option("--transverse_reset", type=float, default=nan)
+# AXIS_stop_rate
+@click.option("--ra_stop_rate", type=float, default=nan)
+@click.option("--dec_stop_rate", type=float, default=nan)
+@click.option("--axis0_stop_rate", type=float, default=nan)
+@click.option("--axis1_stop_rate", type=float, default=nan)
+@click.option("--path_stop_rate", type=float, default=nan)
+@click.option("--transverse_stop_rate", type=float, default=nan)
+# AXIS_add_arcsec
+@click.option("--ra_add_arcsec", type=float, default=nan)
+@click.option("--dec_add_arcsec", type=float, default=nan)
+@click.option("--axis0_add_arcsec", type=float, default=nan)
+@click.option("--axis1_add_arcsec", type=float, default=nan)
+@click.option("--path_add_arcsec", type=float, default=nan)
+@click.option("--transverse_add_arcsec", type=float, default=nan)
+# AXIS_set_rate_arcsec_per_sec
+@click.option("--ra_set_rate_arcsec_per_sec", type=float, default=nan)
+@click.option("--dec_set_rate_arcsec_per_sec", type=float, default=nan)
+@click.option("--axis0_set_rate_arcsec_per_sec", type=float, default=nan)
+@click.option("--axis1_set_rate_arcsec_per_sec", type=float, default=nan)
+@click.option("--path_set_rate_arcsec_per_sec", type=float, default=nan)
+@click.option("--transverse_set_rate_arcsec_per_sec", type=float, default=nan)
+async def offset(command: Command, pwi: PWI4, **kwargs):
+    """mount offset
      
         One or more of the following offsets can be specified as a keyword argument:
         AXIS_reset: Clear all position and rate offsets for this axis. Set this to any value to issue the command.
@@ -195,10 +226,48 @@ async def mount_offset(command: Command, pwi: PWI4):
         mount_offset(axis0_add_arcsec=-30, axis0_set_rate_arcsec_per_sec=1, transverse_reset=0)
         """
 
-    try:
-        pass
-#        status = pwi.mount_mount_offset(alt_d, az_d)
     
+
+    try:
+        status = pwi.mount_offset(**{key: value for key, value in kwargs.items() if value is not nan})
+        
+        command.info(
+            is_tracking=status.mount.is_tracking,
+            is_connected=status.mount.is_connected,
+            is_slewing=status.mount.is_slewing,
+            altitude_degs=status.mount.altitude_degs,
+            dec_apparent_degs=status.mount.dec_apparent_degs,
+            field_angle_rate_at_target_degs_per_sec=status.mount.field_angle_rate_at_target_degs_per_sec,
+            axis0 = {
+                'dist_to_target_arcsec': status.mount.axis0.dist_to_target_arcsec,
+                'is_enabled': status.mount.axis0.is_enabled,
+                'position_degs': status.mount.axis0.position_degs,
+                'rms_error_arcsec': status.mount.axis0.rms_error_arcsec,
+                'servo_error_arcsec': status.mount.axis0.servo_error_arcsec,
+            },
+            axis1 = {
+                'dist_to_target_arcsec': status.mount.axis1.dist_to_target_arcsec,
+                'is_enabled': status.mount.axis1.is_enabled,
+                'position_degs': status.mount.axis1.position_degs,
+                'rms_error_arcsec': status.mount.axis1.rms_error_arcsec,
+                'servo_error_arcsec': status.mount.axis1.servo_error_arcsec,
+            },
+            dec_j2000_degs=status.mount.dec_j2000_degs,
+            geometry=status.mount.geometry,
+            model = {
+                'filename': status.mount.model.filename,
+                'num_points_enabled': status.mount.model.num_points_enabled,
+                'num_points_total': status.mount.model.num_points_total,
+              
+              'rms_error_arcsec': status.mount.model.rms_error_arcsec,
+            },
+            field_angle_at_target_degs=status.mount.field_angle_at_target_degs,
+            ra_apparent_hours=status.mount.ra_apparent_hours,
+            azimuth_degs=status.mount.azimuth_degs,
+            field_angle_here_degs=status.mount.field_angle_here_degs,
+            ra_j2000_hours=status.mount.ra_j2000_hours
+        )
+
     except Exception as ex:
         return command.fail(error=str(ex))
 
