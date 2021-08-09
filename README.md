@@ -18,7 +18,6 @@ Lvm Planewave PWI Clu Wrapper
     alias podman="sudo docker"
 
 ## Todo
-- Implement full pwi interface
 - Container not using the host network
     
 ## Prerequisites
