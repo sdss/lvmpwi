@@ -60,9 +60,9 @@ RUN mkdir -p $PWI_AUTOTUNER_PATH && \
     wget http://planewave.com/files/software/PWI4/autotuner-$PWI_AUTOTUNER_VERSION.tar.gz && \
     (cd ${PWI_AUTOTUNER_PATH%/*} && tar xzf /autotuner-$PWI_AUTOTUNER_VERSION.tar.gz) && \
     rm /autotuner-$PWI_AUTOTUNER_VERSION.tar.gz && \
-    echo "#!/bin/sh" > $PWI_AUTOTUNER_PATH/run-autotuner_nogl && \
-    echo "cd ${0%/*}" >> $PWI_AUTOTUNER_PATH/run-autotuner_nogl && \
-    echo "mono AutoTuner.exe --nogl" >> $PWI_AUTOTUNER_PATH/run-autotuner_nogl && \
+    echo '#!/bin/sh' > $PWI_AUTOTUNER_PATH/run-autotuner_nogl && \
+    echo 'cd ${0%/*}' >> $PWI_AUTOTUNER_PATH/run-autotuner_nogl && \
+    echo 'mono AutoTuner.exe --nogl' >> $PWI_AUTOTUNER_PATH/run-autotuner_nogl && \
     chmod 755 $PWI_AUTOTUNER_PATH/run-autotuner_nogl
 
         
