@@ -40,6 +40,17 @@ def build(lvmt_root:str, use_cache: bool):
 
 
 @click.command()   
+@click.option("--name", "-n", default=default_pwi, type=str)
+@click.option("--debug", "-n", default=False, type=bool)
+def autotuner(name: str, debug:bool):
+    lvmt_image = f"localhost/{lvmt_image_name}"
+    run_autotuner = f"-v {lvmt_root}:/root/lvmt:Z -e PWI_NAME={name}"
+    run = f"{container_bin} exec -ti {name} /opt/autotuner-1.0.3beta1/run-autotuner_nogl"
+    print(run)
+    command = subprocess.run(shlex.split(f"{run}"))
+    
+
+@click.command()   
 @click.option("--lvmt_root", default=lvmt_root, type=str)
 @click.option("--with-ui/--without-ui", default=True)
 @click.option("--name", "-n", default=default_pwi, type=str)

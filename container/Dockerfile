@@ -52,6 +52,18 @@ RUN mkdir -p $PWI_PATH && \
     wget http://planewave.com/files/software/PWI4/pwi-$PWI_VERSION.tar.gz && \
     (cd ${PWI_PATH%/*} && tar xzf /pwi-$PWI_VERSION.tar.gz) && \
     rm /pwi-$PWI_VERSION.tar.gz
+    
+ENV PWI_AUTOTUNER_VERSION=1.0.3beta1
+ENV PWI_AUTOTUNER_PATH=/opt/autotuner-$PWI_AUTOTUNER_VERSION
+# beta version of autotuner without 3D
+RUN mkdir -p $PWI_AUTOTUNER_PATH && \
+    wget http://planewave.com/files/software/PWI4/autotuner-$PWI_AUTOTUNER_VERSION.tar.gz && \
+    (cd ${PWI_AUTOTUNER_PATH%/*} && tar xzf /autotuner-$PWI_AUTOTUNER_VERSION.tar.gz) && \
+    rm /autotuner-$PWI_AUTOTUNER_VERSION.tar.gz && \
+    echo "#!/bin/sh" > $PWI_AUTOTUNER_PATH/run-autotuner_nogl && \
+    echo "cd ${0%/*}" >> $PWI_AUTOTUNER_PATH/run-autotuner_nogl && \
+    echo "mono AutoTuner.exe --nogl" >> $PWI_AUTOTUNER_PATH/run-autotuner_nogl && \
+    chmod 755 $PWI_AUTOTUNER_PATH/run-autotuner_nogl
 
         
 EXPOSE 3389/tcp

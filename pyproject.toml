@@ -34,6 +34,7 @@ container_build ="container:build"
 container_start ="container:start"
 container_stop ="container:stop"
 container_isRunning ="container:isRunning"
+container_autotuner ="container:autotuner"
 
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
