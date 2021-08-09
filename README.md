@@ -74,7 +74,7 @@ Some linux distributions do not have python >= 3.7 as the standard python3 versi
     # linux ( should also work under windows with MS rdesktop) Password: lvmt
     xfreerdp  +glyph-cache /relax-order-checks /v:YOUR_HOST
     # run autotuner from container
-    # Note: the standard autotuner needs opengl which is not available with tigervnc/tightvnc only with turbovnc and native display.
+    # Note: the standard autotuner needs opengl, which is not available with tigervnc/tightvnc, only with turbovnc and native display.
     poetry run container_autotuner
     
 ### Run tests 
