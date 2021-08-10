@@ -27,7 +27,7 @@ Some linux distributions do not have python >= 3.7 as the standard python3 versi
 ### Centos 8.X
 
     # as root
-    yum install python38
+    yum install python38-devel
     # as user 
     python3.8  -m pip  install --user --upgrade pip
     pip3.8 install poetry
@@ -37,7 +37,7 @@ Some linux distributions do not have python >= 3.7 as the standard python3 versi
 
     # as root
     zypper ar https://download.opensuse.org/repositories/devel:/languages:/python:/Factory/openSUSE_Leap_15.2/ devel_python
-    zypper install python39
+    zypper install python39-devel
     # as user 
     python3.9  -m pip  install --user --upgrade pip
     pip3.9 install poetry
