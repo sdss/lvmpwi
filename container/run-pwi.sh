@@ -9,7 +9,7 @@ setup_pwi4() {
     (cd ~/PlaneWave\ Instruments/PWI4/ && ln -s $LVMT_CONFIG_PATH/PWI4/Settings/ )
     (cd ~/PlaneWave\ Instruments/ && ln -s $LVMT_CONFIG_PATH/PWI4/Mount\ Tuning/ )
     mkdir -p $LVMT_PATH/data
-    (cd $PWI_PATH && ln -sf $LVMT_PATH/data/ data/ )
+    (cd $PWI_PATH && ln -sf $LVMT_PATH/data data )
 }
 
 start_pwi4() {
