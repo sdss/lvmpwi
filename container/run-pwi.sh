@@ -1,15 +1,17 @@
 #!/usr/bin/bash
 
 LVMT_PATH=/root/lvmt
-LVMT_CONFIG_PATH=$LVMT_PATH/config/lvm/$PWI_NAME
+LVMT_CONFIG_PATH=$LVMT_PATH/config/planewave/$PWI_NAME
 
 setup_pwi4() {
-    mkdir -p $LVMT_PATH/config/lvm/$PWI_NAME
+    mkdir -p $LVMT_CONFIG_PATH/Settings/
     mkdir -p ~/PlaneWave\ Instruments/PWI4/
     rm -rf ~/PlaneWave\ Instruments/PWI4/Settings
-    (cd ~/PlaneWave\ Instruments/PWI4/ && ln -s $LVMT_CONFIG_PATH/PWI4/Settings/ )
+    (cd ~/PlaneWave\ Instruments/PWI4/ && ln -s $LVMT_CONFIG_PATH/Settings/ )
+
+    mkdir -p $LVMT_CONFIG_PATH/Mount\ Tuning/
     rm -rf ~/PlaneWave\ Instruments/Mount\ Tuning
-    (cd ~/PlaneWave\ Instruments/ && ln -s $LVMT_CONFIG_PATH/PWI4/Mount\ Tuning/ )
+    (cd ~/PlaneWave\ Instruments/ && ln -s $LVMT_CONFIG_PATH/Mount\ Tuning/ )
     mkdir -p $LVMT_PATH/data
     (cd $PWI_PATH && ln -sf $LVMT_PATH/data data )
 }
