@@ -18,7 +18,7 @@ container_bin = 'podman'
 lvmt_root = os.environ["PWD"]
 lvmt_image_name = 'ubuntu_lvmt_pwi'
 
-default_pwi = 'pwi'
+default_pwi = 'lvmpwi'
 
 # podman run --rm -ti --name pwi --network=host -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z --device /dev/dri -v ~/.Xauthority:/root/.Xauthority:Z  -e PWI_NAME=pwi localhost/ubuntu_lvmt_pwi
 
@@ -41,7 +41,7 @@ def build(lvmt_root:str, use_cache: bool):
 
 @click.command()   
 @click.option("--name", "-n", default=default_pwi, type=str)
-@click.option("--debug", "-n", default=False, type=bool)
+@click.option("--debug", "-d", default=False, type=bool)
 def autotuner(name: str, debug:bool):
     lvmt_image = f"localhost/{lvmt_image_name}"
     run_autotuner = f"-v {lvmt_root}:/root/lvmt:Z -e PWI_NAME={name}"
@@ -54,7 +54,7 @@ def autotuner(name: str, debug:bool):
 @click.option("--lvmt_root", default=lvmt_root, type=str)
 @click.option("--with-ui/--without-ui", default=True)
 @click.option("--name", "-n", default=default_pwi, type=str)
-@click.option("--debug", "-n", default=False, type=bool)
+@click.option("--debug", "-d", default=False, type=bool)
 def start(name: str, with_ui: bool, lvmt_root:str, debug:bool):
     lvmt_image = f"localhost/{lvmt_image_name}"
 

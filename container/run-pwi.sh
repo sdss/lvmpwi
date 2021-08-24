@@ -39,7 +39,7 @@ use_xrdp() {
 start_actor() {
     # lets give the pwi sw some time to startup
     sleep 1
-    python3 $LVMT_PATH/python/lvmpwi/__main__.py -c $LVMT_PATH/python/lvmpwi/etc/lvmpwi.yml start 
+    python3 $LVMT_PATH/python/lvmpwi/__main__.py -c $LVMT_PATH/python/lvmpwi/etc/$PWI_NAME.yml start 
 }
 
 setup_pwi4
