@@ -18,11 +18,7 @@ container_bin = 'podman'
 lvmt_root = os.environ["PWD"]
 lvmt_image_name = 'ubuntu_lvmt_pwi'
 
-<<<<<<< HEAD
 default_pwi = 'lvm.pwi'
-=======
-default_pwi = 'lvmpwi'
->>>>>>> 86428a059c56275dfa56d7b5cfced883b99f2bba
 
 # podman run --rm -ti --name pwi --network=host -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z --device /dev/dri -v ~/.Xauthority:/root/.Xauthority:Z  -e PWI_NAME=pwi localhost/ubuntu_lvmt_pwi
 
