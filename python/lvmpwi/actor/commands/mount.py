@@ -120,7 +120,7 @@ async def stop(command: Command, pwi: PWI4):
         return command.fail(error=str(ex))
 
     return command.finish(
-        is_enabled = status.mount.axis0.is_enabled and status.mount.axis1.is_enabled
+        is_enabled = status.mount.axis0.is_enabled and status.mount.axis1.is_enabled,
         axis0 = {
             'is_enabled': status.mount.axis0.is_enabled,
         },
