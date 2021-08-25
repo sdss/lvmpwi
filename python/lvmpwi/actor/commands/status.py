@@ -25,7 +25,7 @@ async def isconnected(command: Command, pwi: PWI4):
 
     return command.finish(
         isconnected=pwi.status().mount.is_connected
-        )
+    )
 
 
 @parser.command()
@@ -42,7 +42,7 @@ async def status(command: Command, pwi: PWI4):
         is_tracking=status.mount.is_tracking,
         is_connected=status.mount.is_connected,
         is_slewing=status.mount.is_slewing,
-        is_enabled=status.mount.axis0.is_enabled & status.mount.axis1.is_enabled
+        is_enabled=status.mount.axis0.is_enabled & status.mount.axis1.is_enabled,
         altitude_degs=status.mount.altitude_degs,
         dec_apparent_degs=status.mount.dec_apparent_degs,
         field_angle_rate_at_target_degs_per_sec=status.mount.field_angle_rate_at_target_degs_per_sec,
