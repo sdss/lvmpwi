@@ -29,7 +29,7 @@ async def connect(command: Command, pwi: PWI4):
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    command.finish(
+    return command.finish(
         isconnected = status.mount.is_connected
     )
     
@@ -47,7 +47,7 @@ async def disconnect(command: Command, pwi: PWI4):
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    command.finish(
+    return command.finish(
         isconnected = status.mount.is_connected
     )
     
@@ -69,7 +69,7 @@ async def enable(command: Command, pwi: PWI4, axis: int):
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    command.finish(
+    return command.finish(
         isenabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
     )
 
@@ -89,7 +89,7 @@ async def disable(command: Command, pwi: PWI4, axis: int):
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    command.finish(
+    return command.finish(
         isenabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
     )
 
@@ -103,18 +103,12 @@ async def stop(command: Command, pwi: PWI4):
 
     try:
         status = pwi.mount_stop()
-<<<<<<< HEAD
-=======
-        command.info(
-            isenabled = status.mount.axis0.is_enabled and status.mount.axis1.is_enabled
-        )
->>>>>>> 62c532817c4c8f768902c6061ea06bd8f7274f84
     
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    command.finish(
-        isenabled = status.mount.is_enabled
+    return command.finish(
+        isenabled = status.mount.axis0.is_enabled and status.mount.axis1.is_enabled
     )
 
 
@@ -133,7 +127,7 @@ async def goto_ra_dec_apparent(command: Command, pwi: PWI4, ra_h: float, deg_d: 
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    command.finish(
+    return command.finish(
         dec_apparent_degs = status.mount.dec_apparent_degs,
         ra_apparent_hours = status.mount.ra_apparent_hours,
     )
@@ -155,7 +149,7 @@ async def goto_ra_dec_j2000(command: Command, pwi: PWI4, ra_h: float, deg_d: flo
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    command.finish(
+    return command.finish(
         dec_j2000_degs = status.mount.dec_j2000_degs,
         ra_j2000_hours = status.mount.ra_j2000_hours,
     )
@@ -175,7 +169,7 @@ async def goto_alt_az_j2000(command: Command, pwi: PWI4, alt_d: float, az_d: flo
     except Exception as ex:
         return command.fail(error=str(ex))
     
-    command.finish(
+    return command.finish(
         altitude_degs = status.mount.altitude_degs,
         azimuth_degs = status.mount.azimuth_degs,
     )
@@ -244,7 +238,7 @@ async def offset(command: Command, pwi: PWI4, **kwargs):
         return command.fail(error=str(ex))
 
     
-    command.finish(
+    return command.finish(
         is_tracking=status.mount.is_tracking,
         is_connected=status.mount.is_connected,
         is_slewing=status.mount.is_slewing,
@@ -296,7 +290,7 @@ async def park(command: Command, pwi: PWI4):
     except Exception as ex:
         return command.fail(error=str(ex))
     
-    command.finish(
+    return command.finish(
         altitude_degs = status.mount.altitude_degs,
         azimuth_degs = status.mount.azimuth_degs,
     )
@@ -315,7 +309,7 @@ async def park_here(command: Command, pwi: PWI4):
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    command.finish(
+    return command.finish(
         altitude_degs = status.mount.altitude_degs,
         azimuth_degs = status.mount.azimuth_degs,
     )
@@ -334,7 +328,7 @@ async def tracking_on(command: Command, pwi: PWI4):
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    command.finish(
+    return command.finish(
         is_tracking = status.mount.is_tracking,
     )
 
@@ -351,7 +345,7 @@ async def tracking_off(command: Command, pwi: PWI4):
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    command.finish(
+    return command.finish(
         is_tracking = status.mount.is_tracking,
     )
 
