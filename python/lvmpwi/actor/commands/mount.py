@@ -25,14 +25,15 @@ async def connect(command: Command, pwi: PWI4):
 
     try:
         status = pwi.mount_connect()
-        command.info(
-            isconnected = status.mount.is_connected
-        )
-    
+
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    return command.finish("done")
+    command.finish(
+        isconnected = status.mount.is_connected
+    )
+    
+
 
 # pwi4 command: mount_disconnect(self):
 
@@ -42,14 +43,15 @@ async def disconnect(command: Command, pwi: PWI4):
 
     try:
         status = pwi.mount_disconnect()
-        command.info(
-            isconnected = status.mount.is_connected
-        )
-    
+
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    return command.finish("done")
+    command.finish(
+        isconnected = status.mount.is_connected
+    )
+    
+
 
 
 # pwi4 command: mount_enable(self, axisNum):
@@ -63,14 +65,14 @@ async def enable(command: Command, pwi: PWI4, axis: int):
         # we do ignore the false status returned
         pwi.mount_enable(axis)
         status = pwi.status()
-        command.info(
-            isenabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
-        )
     
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    return command.finish("done")
+    command.finish(
+        isenabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
+    )
+
 
 # pwi4 command: mount_disable(self, axisNum):
 
@@ -83,14 +85,14 @@ async def disable(command: Command, pwi: PWI4, axis: int):
         # we do ignore the false status returned
         pwi.mount_disable(axis)
         status = pwi.status()
-        command.info(
-            isenabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
-        )
     
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    return command.finish("done")
+    command.finish(
+        isenabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
+    )
+
 
 
 # pwi4 command: mount_stop(self):
@@ -101,14 +103,20 @@ async def stop(command: Command, pwi: PWI4):
 
     try:
         status = pwi.mount_stop()
+<<<<<<< HEAD
+=======
         command.info(
             isenabled = status.mount.axis0.is_enabled and status.mount.axis1.is_enabled
         )
+>>>>>>> 62c532817c4c8f768902c6061ea06bd8f7274f84
     
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    return command.finish("done")
+    command.finish(
+        isenabled = status.mount.is_enabled
+    )
+
 
 
 # pwi4 command: mount_goto_ra_dec_apparent(self, ra_hours, dec_degs):
@@ -121,15 +129,16 @@ async def goto_ra_dec_apparent(command: Command, pwi: PWI4, ra_h: float, deg_d: 
 
     try:
         status = pwi.mount_goto_ra_dec_apparent(ra_h, deg_d)
-        command.info(
-            dec_apparent_degs = status.mount.dec_apparent_degs,
-            ra_apparent_hours = status.mount.ra_apparent_hours,
-        )
-    
+
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    return command.finish("done")
+    command.finish(
+        dec_apparent_degs = status.mount.dec_apparent_degs,
+        ra_apparent_hours = status.mount.ra_apparent_hours,
+    )
+    
+
 
 
 # pwi4 command: mount_goto_ra_dec_j2000(self, ra_hours, dec_degs):
@@ -142,15 +151,15 @@ async def goto_ra_dec_j2000(command: Command, pwi: PWI4, ra_h: float, deg_d: flo
 
     try:
         status = pwi.mount_goto_ra_dec_j2000(ra_h, deg_d)
-        command.info(
-            dec_j2000_degs = status.mount.dec_j2000_degs,
-            ra_j2000_hours = status.mount.ra_j2000_hours,
-        )
     
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    return command.finish("done")
+    command.finish(
+        dec_j2000_degs = status.mount.dec_j2000_degs,
+        ra_j2000_hours = status.mount.ra_j2000_hours,
+    )
+
 
 # pwi4 command: mount_goto_alt_az(self, alt_degs, az_degs):
 
@@ -162,15 +171,15 @@ async def goto_alt_az_j2000(command: Command, pwi: PWI4, alt_d: float, az_d: flo
 
     try:
         status = pwi.mount_goto_alt_az(alt_d, az_d)
-        command.info(
-            altitude_degs = status.mount.altitude_degs,
-            azimuth_degs = status.mount.azimuth_degs,
-        )
     
     except Exception as ex:
         return command.fail(error=str(ex))
+    
+    command.finish(
+        altitude_degs = status.mount.altitude_degs,
+        azimuth_degs = status.mount.azimuth_degs,
+    )
 
-    return command.finish("done")
 
 # pwi4 command: mount_offset(self, **kwargs):
 
@@ -230,48 +239,49 @@ async def offset(command: Command, pwi: PWI4, **kwargs):
 
     try:
         status = pwi.mount_offset(**{key: value for key, value in kwargs.items() if value is not nan})
-        
-        command.info(
-            is_tracking=status.mount.is_tracking,
-            is_connected=status.mount.is_connected,
-            is_slewing=status.mount.is_slewing,
-            altitude_degs=status.mount.altitude_degs,
-            dec_apparent_degs=status.mount.dec_apparent_degs,
-            field_angle_rate_at_target_degs_per_sec=status.mount.field_angle_rate_at_target_degs_per_sec,
-            axis0 = {
-                'dist_to_target_arcsec': status.mount.axis0.dist_to_target_arcsec,
-                'is_enabled': status.mount.axis0.is_enabled,
-                'position_degs': status.mount.axis0.position_degs,
-                'rms_error_arcsec': status.mount.axis0.rms_error_arcsec,
-                'servo_error_arcsec': status.mount.axis0.servo_error_arcsec,
-            },
-            axis1 = {
-                'dist_to_target_arcsec': status.mount.axis1.dist_to_target_arcsec,
-                'is_enabled': status.mount.axis1.is_enabled,
-                'position_degs': status.mount.axis1.position_degs,
-                'rms_error_arcsec': status.mount.axis1.rms_error_arcsec,
-                'servo_error_arcsec': status.mount.axis1.servo_error_arcsec,
-            },
-            dec_j2000_degs=status.mount.dec_j2000_degs,
-            geometry=status.mount.geometry,
-            model = {
-                'filename': status.mount.model.filename,
-                'num_points_enabled': status.mount.model.num_points_enabled,
-                'num_points_total': status.mount.model.num_points_total,
-              
-              'rms_error_arcsec': status.mount.model.rms_error_arcsec,
-            },
-            field_angle_at_target_degs=status.mount.field_angle_at_target_degs,
-            ra_apparent_hours=status.mount.ra_apparent_hours,
-            azimuth_degs=status.mount.azimuth_degs,
-            field_angle_here_degs=status.mount.field_angle_here_degs,
-            ra_j2000_hours=status.mount.ra_j2000_hours
-        )
 
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    return command.finish("done")
+    
+    command.finish(
+        is_tracking=status.mount.is_tracking,
+        is_connected=status.mount.is_connected,
+        is_slewing=status.mount.is_slewing,
+        is_enabled=status.mount.axis0.is_enabled & status.mount.axis1.is_enabled
+        altitude_degs=status.mount.altitude_degs,
+        dec_apparent_degs=status.mount.dec_apparent_degs,
+        field_angle_rate_at_target_degs_per_sec=status.mount.field_angle_rate_at_target_degs_per_sec,
+        axis0 = {
+            'dist_to_target_arcsec': status.mount.axis0.dist_to_target_arcsec,
+            'is_enabled': status.mount.axis0.is_enabled,
+            'position_degs': status.mount.axis0.position_degs,
+            'rms_error_arcsec': status.mount.axis0.rms_error_arcsec,
+            'servo_error_arcsec': status.mount.axis0.servo_error_arcsec,
+        },
+        axis1 = {
+            'dist_to_target_arcsec': status.mount.axis1.dist_to_target_arcsec,
+            'is_enabled': status.mount.axis1.is_enabled,
+            'position_degs': status.mount.axis1.position_degs,
+            'rms_error_arcsec': status.mount.axis1.rms_error_arcsec,
+            'servo_error_arcsec': status.mount.axis1.servo_error_arcsec,
+        },
+        dec_j2000_degs=status.mount.dec_j2000_degs,
+        geometry=status.mount.geometry,
+        model = {
+            'filename': status.mount.model.filename,
+            'num_points_enabled': status.mount.model.num_points_enabled,
+            'num_points_total': status.mount.model.num_points_total,
+            
+            'rms_error_arcsec': status.mount.model.rms_error_arcsec,
+        },
+        field_angle_at_target_degs=status.mount.field_angle_at_target_degs,
+        ra_apparent_hours=status.mount.ra_apparent_hours,
+        azimuth_degs=status.mount.azimuth_degs,
+        field_angle_here_degs=status.mount.field_angle_here_degs,
+        ra_j2000_hours=status.mount.ra_j2000_hours
+    )
+
 
 
 # pwi4 command: mount_park(self):
@@ -282,15 +292,16 @@ async def park(command: Command, pwi: PWI4):
 
     try:
         status = pwi.mount_park()
-        command.info(
-            altitude_degs = status.mount.altitude_degs,
-            azimuth_degs = status.mount.azimuth_degs,
-        )
-    
+
     except Exception as ex:
         return command.fail(error=str(ex))
+    
+    command.finish(
+        altitude_degs = status.mount.altitude_degs,
+        azimuth_degs = status.mount.azimuth_degs,
+    )
 
-    return command.finish("done")
+
 
 # pwi4 command: mount_set_park_here(self):
 
@@ -300,15 +311,16 @@ async def park_here(command: Command, pwi: PWI4):
 
     try:
         status = pwi.mount_park_here()
-        command.info(
-            altitude_degs = status.mount.altitude_degs,
-            azimuth_degs = status.mount.azimuth_degs,
-        )
-    
+
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    return command.finish("done")
+    command.finish(
+        altitude_degs = status.mount.altitude_degs,
+        azimuth_degs = status.mount.azimuth_degs,
+    )
+    
+
 
 # pwi4 command: mount_tracking_on(self):
 
@@ -318,14 +330,14 @@ async def tracking_on(command: Command, pwi: PWI4):
 
     try:
         status = pwi.mount_tracking_on()
-        command.info(
-            is_tracking = status.mount.is_tracking,
-        )
     
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    return command.finish("done")
+    command.finish(
+        is_tracking = status.mount.is_tracking,
+    )
+
 
 # pwi4 command: mount_tracking_off(self):
 
@@ -335,14 +347,14 @@ async def tracking_off(command: Command, pwi: PWI4):
 
     try:
         status = pwi.mount_tracking_off()
-        command.info(
-            is_tracking = status.mount.is_tracking,
-        )
     
     except Exception as ex:
         return command.fail(error=str(ex))
 
-    return command.finish("done")
+    command.finish(
+        is_tracking = status.mount.is_tracking,
+    )
+
 
 # pwi4 command: mount_follow_tle(self, tle_line_1, tle_line_2, tle_line_3):
 
