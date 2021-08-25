@@ -8,7 +8,12 @@ setup_pwi4() {
     mkdir -p ~/PlaneWave\ Instruments/PWI4/
     rm -rf ~/PlaneWave\ Instruments/PWI4/Settings
     (cd ~/PlaneWave\ Instruments/PWI4/ && ln -s $LVMT_CONFIG_PATH/Settings/ )
-
+    if [ $PWI_SIMULATOR ]; then 
+        sed  -i "s/elmo/simulator/" $LVMT_CONFIG_PATH/Settings/PWI4.cfg
+    else
+        sed  -i "s/simulator/elmo/" $LVMT_CONFIG_PATH/Settings/PWI4.cfg
+    fi
+    
     mkdir -p $LVMT_CONFIG_PATH/Mount\ Tuning/
     rm -rf ~/PlaneWave\ Instruments/Mount\ Tuning
     (cd ~/PlaneWave\ Instruments/ && ln -s $LVMT_CONFIG_PATH/Mount\ Tuning/ )

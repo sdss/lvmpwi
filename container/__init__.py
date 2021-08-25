@@ -55,7 +55,8 @@ def autotuner(name: str, debug:bool):
 @click.option("--with-ui/--without-ui", default=True)
 @click.option("--name", "-n", default=default_pwi, type=str)
 @click.option("--debug", "-d", default=False, type=bool)
-def start(name: str, with_ui: bool, lvmt_root:str, debug:bool):
+@click.option("--simulator/--elmo", default=False)
+def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool):
     lvmt_image = f"localhost/{lvmt_image_name}"
 
     run_base = f"--rm -d --name {name} --network=host"
@@ -69,6 +70,9 @@ def start(name: str, with_ui: bool, lvmt_root:str, debug:bool):
         
     if debug:
         run_base +=  f" -p 8220"
+
+    if simulator:
+        run_base +=  f" -e PWI_SIMULATOR=true"
 
     ## Ugly hack - fixme with udev rule
     #if os.path.exists('/dev/ttyACM0'):
