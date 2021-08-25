@@ -102,7 +102,7 @@ async def stop(command: Command, pwi: PWI4):
     try:
         status = pwi.mount_stop()
         command.info(
-            isenabled = status.mount.is_enabled
+            isenabled = status.mount.axis0.is_enabled and status.mount.axis1.is_enabled
         )
     
     except Exception as ex:
