@@ -70,7 +70,7 @@ async def enable(command: Command, pwi: PWI4, axis: int):
         return command.fail(error=str(ex))
 
     return command.finish(
-        isenabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
+        is_enabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
     )
 
 
@@ -90,7 +90,7 @@ async def disable(command: Command, pwi: PWI4, axis: int):
         return command.fail(error=str(ex))
 
     return command.finish(
-        isenabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
+        is_enabled = status.mount.axis1.is_enabled if axis else status.mount.axis0.is_enabled,
     )
 
 
@@ -108,7 +108,7 @@ async def stop(command: Command, pwi: PWI4):
         return command.fail(error=str(ex))
 
     return command.finish(
-        isenabled = status.mount.axis0.is_enabled and status.mount.axis1.is_enabled
+        is_enabled = status.mount.axis0.is_enabled and status.mount.axis1.is_enabled
     )
 
 
@@ -242,7 +242,7 @@ async def offset(command: Command, pwi: PWI4, **kwargs):
         is_tracking=status.mount.is_tracking,
         is_connected=status.mount.is_connected,
         is_slewing=status.mount.is_slewing,
-        is_enabled=status.mount.axis0.is_enabled & status.mount.axis1.is_enabled
+        is_enabled=status.mount.axis0.is_enabled & status.mount.axis1.is_enabled,
         altitude_degs=status.mount.altitude_degs,
         dec_apparent_degs=status.mount.dec_apparent_degs,
         field_angle_rate_at_target_degs_per_sec=status.mount.field_angle_rate_at_target_degs_per_sec,
