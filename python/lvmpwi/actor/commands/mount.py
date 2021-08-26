@@ -105,6 +105,50 @@ async def disable(command: Command, pwi: PWI4, axis: int):
         },
     )
 
+# pwi4 command: mount_set_slew_time_constant(self, value):
+
+@parser.command()
+@click.argument("TIME", type=int)
+async def mount_set_slew_time_constant(command: Command, pwi: PWI4, time: int):
+    """mount set_slew_time_constant"""
+
+    try:
+        status = pwi.mount_set_slew_time_constant()
+    
+    except Exception as ex:
+        return command.fail(error=str(ex))
+
+    return command.finish(
+        is_enabled = status.mount.axis0.is_enabled and status.mount.axis1.is_enabled,
+        axis0 = {
+            'is_enabled': status.mount.axis0.is_enabled,
+        },
+        axis1 = {
+            'is_enabled': status.mount.axis1.is_enabled,
+        },
+    )
+
+# pwi4 command: mount_find_home(self, value):
+
+@parser.command()
+async def mount_find_home(command: Command, pwi: PWI4):
+    """mount find_home"""
+
+    try:
+        status = pwi.mount_find_home()
+    
+    except Exception as ex:
+        return command.fail(error=str(ex))
+
+    return command.finish(
+        is_enabled = status.mount.axis0.is_enabled and status.mount.axis1.is_enabled,
+        axis0 = {
+            'is_enabled': status.mount.axis0.is_enabled,
+        },
+        axis1 = {
+            'is_enabled': status.mount.axis1.is_enabled,
+        },
+    )
 
 
 # pwi4 command: mount_stop(self):
@@ -367,6 +411,17 @@ async def tracking_off(command: Command, pwi: PWI4):
         is_tracking = status.mount.is_tracking,
     )
 
+# pwi4 command: mount_radecpath_new(self):
+
+# pwi4 command: mount_radecpath_add_point(self, jd, ra_j2000_hours, dec_j2000_degs):
+
+# pwi4 command: mount_radecpath_apply(self):
+
+# pwi4 command: mount_custom_path_new(self, coord_type):
+
+# pwi4 command: mount_custom_path_add_point_list(self, points):
+
+# pwi4 command: mount_custom_path_apply(self):
 
 # pwi4 command: mount_follow_tle(self, tle_line_1, tle_line_2, tle_line_3):
 
