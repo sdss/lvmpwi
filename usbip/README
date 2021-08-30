@@ -8,4 +8,8 @@ Clientside:
 
  /etc/systemd/system/usbip_planewave.service
  /usr/local/sbin/usbip_planewave.sh
+ 
+ After installing systemd scripts systemctl daemon-reload*.service, the systemd daemon has to be restarted.
+ 
+  sudo systemctl daemon-reload
 
