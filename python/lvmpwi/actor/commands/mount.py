@@ -135,15 +135,10 @@ async def setSlewTimeConstant(command: Command, pwi: PWI4, time: int):
 
 
 async def waitUntilEndOfMovement(command: Command, pwi: PWI4):
-    await asyncio.sleep(0.1)
     while(True):
-        for i in range(5):
-            status = pwi.status()
-            if not status.mount.is_slewing:
-                return
-            await asyncio.sleep(0.1)
-            
+        status = pwi.status()
         command.info(
+            is_slewing=status.mount.is_slewing,
             dec_j2000_degs=status.mount.dec_j2000_degs,
             ra_j2000_hours=status.mount.ra_j2000_hours,
             dec_apparent_degs=status.mount.dec_apparent_degs,
@@ -166,6 +161,12 @@ async def waitUntilEndOfMovement(command: Command, pwi: PWI4):
                 'servo_error_arcsec': status.mount.axis1.servo_error_arcsec,
             },
         )
+        for i in range(5):
+            status = pwi.status()
+            if not status.mount.is_slewing:
+                return
+            await asyncio.sleep(0.1)
+            
         
 
 
