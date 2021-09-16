@@ -27,13 +27,12 @@ async def setConnected(command: Command, pwi: PWI4, enable:bool):
     try:
         status = pwi.mount_connect() if enable else pwi.mount_disconnect()
 
+        return command.finish(
+            isconnected = status.mount.is_connected
+        )
+
     except Exception as ex:
         return command.fail(error=ex.__repr__())
-
-    return command.finish(
-        isconnected = status.mount.is_connected
-    )
-    
 
 
 @parser.command()
@@ -41,7 +40,7 @@ async def setConnected(command: Command, pwi: PWI4, enable:bool):
 @click.option("--axis0", type=bool, default=True)
 @click.option("--axis1", type=bool, default=True)
 async def setEnabled(command: Command, pwi: PWI4, enable:bool, axis0:bool, axis1:bool):
-    """mount disable axis"""
+    """mount enable/disable axis"""
 
     try:
         if axis0:
@@ -50,8 +49,8 @@ async def setEnabled(command: Command, pwi: PWI4, enable:bool, axis0:bool, axis1
             pwi.mount_enable(1) if enable else pwi.mount_disable(1)
             
         await asyncio.sleep(0.1)
+
         status = pwi.status()
-        
         return command.finish(
             is_enabled = status.mount.axis1.is_enabled & status.mount.axis0.is_enabled,
             axis0 = {
@@ -62,20 +61,20 @@ async def setEnabled(command: Command, pwi: PWI4, enable:bool, axis0:bool, axis1
             },
     )
 
-    
     except Exception as ex:
         return command.fail(error=ex.__repr__())
-
 
 
 @parser.command()
 @click.argument("enable", type=bool)
 async def setTracking(command: Command, pwi: PWI4, enable:bool):
-    """mount tracking_on"""
+    """mount enable/disable tracking"""
 
     try:
         status = pwi.mount_tracking_on() if enable else pwi.mount_tracking_off()
-#        await asyncio.sleep(0.1)
+
+        await asyncio.sleep(0.1)
+
         status = pwi.status()
         return command.finish(
             is_tracking = status.mount.is_tracking,
@@ -143,6 +142,7 @@ async def waitUntilEndOfMovement(command: Command, pwi: PWI4):
             if not status.mount.is_slewing:
                 return
             await asyncio.sleep(0.1)
+            
         command.info(
             dec_j2000_degs=status.mount.dec_j2000_degs,
             ra_j2000_hours=status.mount.ra_j2000_hours,
@@ -181,6 +181,7 @@ async def gotoRaDecJ2000(command: Command, pwi: PWI4, ra_h: float, deg_d: float,
     
         await waitUntilEndOfMovement(command, pwi)
     
+        status = pwi.status()
         return command.finish(
             dec_j2000_degs = status.mount.dec_j2000_degs,
             ra_j2000_hours = status.mount.ra_j2000_hours,
@@ -199,6 +200,7 @@ async def gotoRaDecApparent(command: Command, pwi: PWI4, ra_h: float, deg_d: flo
 
         await waitUntilEndOfMovement(command, pwi)
     
+        status = pwi.status()
         return command.finish(
             dec_apparent_degs = status.mount.dec_apparent_degs,
             ra_apparent_hours = status.mount.ra_apparent_hours,
@@ -215,10 +217,11 @@ async def gotoAltAzJ2000(command: Command, pwi: PWI4, alt_d: float, az_d: float)
     """mount goto_alt_az_j2000"""
 
     try:
-        status = pwi.mount_goto_alt_az(alt_d, az_d)
+        pwi.mount_goto_alt_az(alt_d, az_d)
     
         await waitUntilEndOfMovement(command, pwi)
     
+        status = pwi.status()
         return command.finish(
             altitude_degs = status.mount.altitude_degs,
             azimuth_degs = status.mount.azimuth_degs,
@@ -233,10 +236,11 @@ async def findHome(command: Command, pwi: PWI4):
     """mount find_home"""
 
     try:
-        status = pwi.mount_find_home()
+        pwi.mount_find_home()
     
         await waitUntilEndOfMovement(command, pwi)
 
+        status = pwi.status()
         return command.finish(
             dec_j2000_degs = status.mount.dec_j2000_degs,
             ra_j2000_hours = status.mount.ra_j2000_hours,
@@ -257,10 +261,11 @@ async def park(command: Command, pwi: PWI4):
     """mount park"""
 
     try:
-        status = pwi.mount_park()
+        pwi.mount_park()
 
         await waitUntilEndOfMovement(command, pwi)
 
+        status = pwi.status()
         return command.finish(
             dec_j2000_degs = status.mount.dec_j2000_degs,
             ra_j2000_hours = status.mount.ra_j2000_hours,
@@ -284,10 +289,11 @@ async def parkHere(command: Command, pwi: PWI4):
     """mount park"""
 
     try:
-        status = pwi.mount_park_here()
+        pwi.mount_park_here()
 
         await waitUntilEndOfMovement(command, pwi)
 
+        status = pwi.status()
         return command.finish(
             dec_j2000_degs = status.mount.dec_j2000_degs,
             ra_j2000_hours = status.mount.ra_j2000_hours,
@@ -359,49 +365,51 @@ async def offset(command: Command, pwi: PWI4, **kwargs):
     
 
     try:
-        status = pwi.mount_offset(**{key: value for key, value in kwargs.items() if value is not nan})
+        pwi.mount_offset(**{key: value for key, value in kwargs.items() if value is not nan})
+
+        await waitUntilEndOfMovement(command, pwi)
+        
+        status = pwi.status()
+        return command.finish(
+            is_tracking=status.mount.is_tracking,
+            is_connected=status.mount.is_connected,
+            is_slewing=status.mount.is_slewing,
+            is_enabled=status.mount.axis0.is_enabled & status.mount.axis1.is_enabled,
+            altitude_degs=status.mount.altitude_degs,
+            dec_apparent_degs=status.mount.dec_apparent_degs,
+            field_angle_rate_at_target_degs_per_sec=status.mount.field_angle_rate_at_target_degs_per_sec,
+            axis0 = {
+                'dist_to_target_arcsec': status.mount.axis0.dist_to_target_arcsec,
+                'is_enabled': status.mount.axis0.is_enabled,
+                'position_degs': status.mount.axis0.position_degs,
+                'rms_error_arcsec': status.mount.axis0.rms_error_arcsec,
+                'servo_error_arcsec': status.mount.axis0.servo_error_arcsec,
+            },
+            axis1 = {
+                'dist_to_target_arcsec': status.mount.axis1.dist_to_target_arcsec,
+                'is_enabled': status.mount.axis1.is_enabled,
+                'position_degs': status.mount.axis1.position_degs,
+                'rms_error_arcsec': status.mount.axis1.rms_error_arcsec,
+                'servo_error_arcsec': status.mount.axis1.servo_error_arcsec,
+            },
+            dec_j2000_degs=status.mount.dec_j2000_degs,
+            geometry=status.mount.geometry,
+            model = {
+                'filename': status.mount.model.filename,
+                'num_points_enabled': status.mount.model.num_points_enabled,
+                'num_points_total': status.mount.model.num_points_total,
+                
+                'rms_error_arcsec': status.mount.model.rms_error_arcsec,
+            },
+            field_angle_at_target_degs=status.mount.field_angle_at_target_degs,
+            ra_apparent_hours=status.mount.ra_apparent_hours,
+            azimuth_degs=status.mount.azimuth_degs,
+            field_angle_here_degs=status.mount.field_angle_here_degs,
+            ra_j2000_hours=status.mount.ra_j2000_hours
+        )
+
 
     except Exception as ex:
         return command.fail(error=ex.__repr__())
 
-        await waitUntilEndOfMovement(command, pwi)
     
-    return command.finish(
-        is_tracking=status.mount.is_tracking,
-        is_connected=status.mount.is_connected,
-        is_slewing=status.mount.is_slewing,
-        is_enabled=status.mount.axis0.is_enabled & status.mount.axis1.is_enabled,
-        altitude_degs=status.mount.altitude_degs,
-        dec_apparent_degs=status.mount.dec_apparent_degs,
-        field_angle_rate_at_target_degs_per_sec=status.mount.field_angle_rate_at_target_degs_per_sec,
-        axis0 = {
-            'dist_to_target_arcsec': status.mount.axis0.dist_to_target_arcsec,
-            'is_enabled': status.mount.axis0.is_enabled,
-            'position_degs': status.mount.axis0.position_degs,
-            'rms_error_arcsec': status.mount.axis0.rms_error_arcsec,
-            'servo_error_arcsec': status.mount.axis0.servo_error_arcsec,
-        },
-        axis1 = {
-            'dist_to_target_arcsec': status.mount.axis1.dist_to_target_arcsec,
-            'is_enabled': status.mount.axis1.is_enabled,
-            'position_degs': status.mount.axis1.position_degs,
-            'rms_error_arcsec': status.mount.axis1.rms_error_arcsec,
-            'servo_error_arcsec': status.mount.axis1.servo_error_arcsec,
-        },
-        dec_j2000_degs=status.mount.dec_j2000_degs,
-        geometry=status.mount.geometry,
-        model = {
-            'filename': status.mount.model.filename,
-            'num_points_enabled': status.mount.model.num_points_enabled,
-            'num_points_total': status.mount.model.num_points_total,
-            
-            'rms_error_arcsec': status.mount.model.rms_error_arcsec,
-        },
-        field_angle_at_target_degs=status.mount.field_angle_at_target_degs,
-        ra_apparent_hours=status.mount.ra_apparent_hours,
-        azimuth_degs=status.mount.azimuth_degs,
-        field_angle_here_degs=status.mount.field_angle_here_degs,
-        ra_j2000_hours=status.mount.ra_j2000_hours
-    )
-
-
