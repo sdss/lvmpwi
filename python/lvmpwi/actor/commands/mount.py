@@ -113,7 +113,7 @@ async def stop(command: Command, pwi: PWI4):
 
 @parser.command()
 @click.argument("TIME", type=int)
-async def mount_set_slew_time_constant(command: Command, pwi: PWI4, time: int):
+async def setSlewTimeConstant(command: Command, pwi: PWI4, time: int):
     """mount set_slew_time_constant"""
 
     try:
@@ -173,7 +173,7 @@ async def waitUntilEndOfMovement(command: Command, pwi: PWI4):
 @click.argument("RA_H", type=float)
 @click.argument("DEG_D", type=float)
 @click.option("--apparent", type=bool, default=False)
-async def goto_ra_dec_j2000(command: Command, pwi: PWI4, ra_h: float, deg_d: float, apparent: bool):
+async def gotoRaDecJ2000(command: Command, pwi: PWI4, ra_h: float, deg_d: float, apparent: bool):
     """mount goto_ra_dec_j2000"""
 
     try:
@@ -191,7 +191,7 @@ async def goto_ra_dec_j2000(command: Command, pwi: PWI4, ra_h: float, deg_d: flo
 @parser.command()
 @click.argument("RA_H", type=float)
 @click.argument("DEG_D", type=float)
-async def mount_goto_ra_dec_apparent(command: Command, pwi: PWI4, ra_h: float, deg_d: float):
+async def gotoRaDecApparent(command: Command, pwi: PWI4, ra_h: float, deg_d: float):
     """mount goto_ra_dec_apparent """
 
     try:
@@ -211,7 +211,7 @@ async def mount_goto_ra_dec_apparent(command: Command, pwi: PWI4, ra_h: float, d
 @parser.command()
 @click.argument("ALT_D", type=float)
 @click.argument("AZ_D", type=float)
-async def goto_alt_az_j2000(command: Command, pwi: PWI4, alt_d: float, az_d: float):
+async def gotoAltAzJ2000(command: Command, pwi: PWI4, alt_d: float, az_d: float):
     """mount goto_alt_az_j2000"""
 
     try:
@@ -229,7 +229,7 @@ async def goto_alt_az_j2000(command: Command, pwi: PWI4, alt_d: float, az_d: flo
 
 
 @parser.command()
-async def mount_find_home(command: Command, pwi: PWI4):
+async def findHome(command: Command, pwi: PWI4):
     """mount find_home"""
 
     try:
@@ -280,7 +280,7 @@ async def park(command: Command, pwi: PWI4):
 # pwi4 command: mount_set_park_here(self):
 
 @parser.command()
-async def park_here(command: Command, pwi: PWI4):
+async def parkHere(command: Command, pwi: PWI4):
     """mount park"""
 
     try:
