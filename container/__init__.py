@@ -12,6 +12,7 @@ import time
 import pexpect
 import shlex
 import click
+import socket
 from pathlib import PosixPath
 
 container_bin = 'podman'
@@ -33,6 +34,18 @@ def getXauthority():
         xa=PosixPath(xa).expanduser()
         if xa.exists():
             return xa
+    return None
+
+def next_free_port( port=5900, max_port=5909 ):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    while port <= max_port:
+        try:
+            sock.bind(('', port))
+            sock.close()
+            return port
+        except OSError:
+            port += 1
+    print('no free ports')
     return None
 
 
@@ -65,19 +78,22 @@ def autotuner(name: str, debug:bool):
 @click.option("--debug", "-d", default=False, type=bool)
 @click.option("--simulator/--elmo", default=False)
 def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool):
+    vnc_port=None
     lvmt_image = f"localhost/{lvmt_image_name}"
 
-    run_base = f"--rm -d --name {name} --network=host"
+    run_base = f"--rm -d --name {name}"
     system_xauthority = getXauthority()
     if with_ui and os.environ.get("DISPLAY") and system_xauthority:
-        run_base +=  f" -e DISPLAY -v {system_xauthority}:/root/.Xauthority:Z --ipc=host"
+        run_base +=  f" -e DISPLAY -v {system_xauthority}:/root/.Xauthority:Z --ipc=host  --network=host"
         if os.path.exists('/dev/dri'):
             run_base +=  ' --device /dev/dri'
     else:
-        run_base +=  f" -p 3389"
+        vnc_port = next_free_port()
+        run_base +=  f" -p {vnc_port} -e LVMT_RMQ={os.getenv('HOSTNAME')}"
+#        run_base +=  f" -p 3389"
         
     if debug:
-        run_base +=  f" -p 8220"
+        run_base +=  f" -p 8220 -e PWI_DEBUG=true"
 
     if simulator:
         run_base +=  f" -e PWI_SIMULATOR=true"
@@ -97,7 +113,10 @@ def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool):
     #child.expect('BSC loaded')
     #assert isRunning(name) == True
     command = subprocess.run(shlex.split(f"{run}"))
+    if vnc_port and os.environ.get("DISPLAY") and system_xauthority:
+        vncclient = subprocess.run(shlex.split(f"vncviewer {vnc_port - 5900}"))
     logs = subprocess.run(shlex.split(f"podman logs -f {name}"))
+    
 
 @click.command()   
 @click.option("--name", "-n", default=default_pwi, type=str)

@@ -13,12 +13,14 @@ setup_pwi4() {
     else
         sed  -i "s/simulator/elmo/" $LVMT_CONFIG_PATH/Settings/PWI4.cfg
     fi
-    
+
     mkdir -p $LVMT_CONFIG_PATH/Mount\ Tuning/
     rm -rf ~/PlaneWave\ Instruments/Mount\ Tuning
     (cd ~/PlaneWave\ Instruments/ && ln -s $LVMT_CONFIG_PATH/Mount\ Tuning/ )
     mkdir -p $LVMT_PATH/data
     (cd $PWI_PATH && ln -sf $LVMT_PATH/data data )
+
+    
 }
 
 start_pwi4() {
@@ -27,7 +29,7 @@ start_pwi4() {
 }
 
 max_pwi4() {
-    while [-z $(wmctrl -l)]; do sleep 0.1; done
+    while [[ -z $(wmctrl -l) ]]; do sleep 0.1; done
     wmctrl -r ':ACTIVE:' -b toggle,fullscreen
 }
 
@@ -41,19 +43,37 @@ use_xrdp() {
     fluxbox &
 }
 
+use_vnc() {
+    echo -e "${PASSWD:-lvmt}\n${PASSWD:-lvmt}" | passwd
+    cp $LVMT_PATH/container/xrdp.ini /etc/xrdp/ 
+    Xvnc :0 -geometry 1000x800 &
+    export DISPLAY=:0
+    fluxbox &
+}
+
+
 start_actor() {
     # lets give the pwi sw some time to startup
     if [ ! -f $LVMT_PATH/python/lvmpwi/etc/$PWI_NAME.yml ]; then
-       cat $LVMT_PATH/python/lvmpwi/etc/lvm.pwi.yml | sed "s/lvm.pwi/$PWI_NAME/" > $LVMT_PATH/python/lvmpwi/etc/$PWI_NAME.yml
+       cat $LVMT_PATH/python/lvmpwi/etc/lvm.pwi.yml | sed "s/lvm.pwi/$PWI_NAME/; s/host: localhost/host: $LVMT_RMQ/" \
+            > $LVMT_PATH/python/lvmpwi/etc/$PWI_NAME.yml
+       sed  -i "s/elmo/simulator/" $LVMT_CONFIG_PATH/Settings/PWI4.cfg
     fi
     sleep 1
+    if [ $PWI_DEBUG ]; then 
+        PYTHONPATH=$LVMT_PATH/python/:$PYTHONPATH
+    fi
+    
+    echo $PYTHONPATH
+    
     python3 $LVMT_PATH/python/lvmpwi/__main__.py -c $LVMT_PATH/python/lvmpwi/etc/$PWI_NAME.yml start 
 }
 
 setup_pwi4
 
 if [ -z $DISPLAY ]; then
-    use_xrdp
+#    use_xrdp
+    use_vnc
     max_pwi4 &
 fi
 

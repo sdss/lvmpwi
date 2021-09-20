@@ -1,8 +1,3 @@
-# A dictionary of controller name to NPS controller connection parameters.
-pwi:
-    host: localhost
-    port: 8220
-
 # Actor configuration for the AMQPActor class
 actor:
     name: lvm.pwi
