@@ -89,7 +89,7 @@ def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool):
             run_base +=  ' --device /dev/dri'
     else:
         vnc_port = next_free_port()
-        run_base +=  f" -p {vnc_port} -e LVMT_RMQ={os.getenv('HOSTNAME')}"
+        run_base +=  f" -p {vnc_port}:5900 -e LVMT_RMQ={os.getenv('HOSTNAME')}"
 #        run_base +=  f" -p 3389"
         
     if debug:
@@ -113,10 +113,11 @@ def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool):
     #child.expect('BSC loaded')
     #assert isRunning(name) == True
     command = subprocess.run(shlex.split(f"{run}"))
-    if vnc_port and os.environ.get("DISPLAY") and system_xauthority:
-        vncclient = subprocess.run(shlex.split(f"vncviewer {vnc_port - 5900}"))
     logs = subprocess.run(shlex.split(f"podman logs -f {name}"))
+    if vnc_port and os.environ.get("DISPLAY") and system_xauthority:
+        vncclient = subprocess.run(shlex.split(f"vncviewer :{vnc_port - 5900}"))
     
+    print("done")
 
 @click.command()   
 @click.option("--name", "-n", default=default_pwi, type=str)

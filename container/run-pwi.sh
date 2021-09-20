@@ -46,7 +46,7 @@ use_xrdp() {
 use_vnc() {
     echo -e "${PASSWD:-lvmt}\n${PASSWD:-lvmt}" | passwd
     cp $LVMT_PATH/container/xrdp.ini /etc/xrdp/ 
-    Xvnc :0 -geometry 1000x800 &
+    Xvnc :0 -geometry 1100x800 &
     export DISPLAY=:0
     fluxbox &
 }
