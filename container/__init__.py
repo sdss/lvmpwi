@@ -23,7 +23,7 @@ default_pwi = 'lvm.pwi'
 
 # podman run --rm -ti --name pwi --network=host -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z --device /dev/dri -v ~/.Xauthority:/root/.Xauthority:Z  -e PWI_NAME=pwi localhost/ubuntu_lvmt_pwi
 
-# podman run --rm -ti --name pwi -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z -e PWI_NAME=pwi -p 3389 localhost/ubuntu_lvmt_pwi
+# podman run --rm -ti --name pwi -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z -e PWI_NAME=pwi localhost/ubuntu_lvmt_pwi
 
 def isRunning(name: str = default_pwi):
     command = subprocess.run(shlex.split(f"{container_bin} container exists {name}"))
@@ -69,7 +69,7 @@ def autotuner(name: str, debug:bool):
     run = f"{container_bin} exec -ti {name} /opt/autotuner-1.0.3beta1/run-autotuner_nogl"
     print(run)
     command = subprocess.run(shlex.split(f"{run}"))
-    
+
 
 @click.command()   
 @click.option("--lvmt_root", default=lvmt_root, type=str)

@@ -30,6 +30,19 @@ class lvmpwi(AMQPActor):
             **kwargs
     ):
         super().__init__(*args, **kwargs)
+        
+        # Todo: fix schema
+        
+        self.schema = {
+            "type": "object",
+            "properties": {
+                "State": {"type": "string"},
+                "Units": {"type": "string"},
+            },
+            "additionalProperties": True,
+        }
+
+        self.load_schema(self.schema, is_file=False)
 
     async def start(self):
         await super().start()
