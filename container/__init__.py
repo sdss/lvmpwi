@@ -77,7 +77,8 @@ def autotuner(name: str, debug:bool):
 @click.option("--name", "-n", default=default_pwi, type=str)
 @click.option("--debug", "-d", default=False, type=bool)
 @click.option("--simulator/--elmo", default=False)
-def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool):
+@click.option("--geom", "-g", default='800x600', type=str)
+def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool, geom:str):
     vnc_port=None
     lvmt_image = f"localhost/{lvmt_image_name}"
 
@@ -89,7 +90,9 @@ def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool):
             run_base +=  ' --device /dev/dri'
     else:
         vnc_port = next_free_port()
-        run_base +=  f" -p {vnc_port}:5900 -e LVMT_RMQ={os.getenv('HOSTNAME')}"
+        run_base +=  f" -p {vnc_port}:5900 -e LVMT_RMQ={os.getenv('HOSTNAME')} -e PWI_GEOM={geom}"
+
+
 #        run_base +=  f" -p 3389"
         
     if debug:

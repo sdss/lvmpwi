@@ -39,7 +39,7 @@ max_pwi4() {
 use_xrdp() {
     echo -e "${PASSWD:-lvmt}\n${PASSWD:-lvmt}" | passwd
     cp $LVMT_PATH/container/xrdp.ini /etc/xrdp/ 
-    Xvnc :2 -geometry 1200x1000 &
+    Xvnc :2 -geometry 800x600 &
     /usr/sbin/xrdp-sesman
     /usr/sbin/xrdp
     export DISPLAY=:2 
@@ -49,7 +49,7 @@ use_xrdp() {
 use_vnc() {
     echo -e "${PASSWD:-lvmt}\n${PASSWD:-lvmt}" | passwd
     cp $LVMT_PATH/container/xrdp.ini /etc/xrdp/ 
-    Xvnc :0 -geometry 1100x800 &
+    Xvnc :0 -geometry $PWI_GEOM &
     export DISPLAY=:0
     fluxbox &
 }
