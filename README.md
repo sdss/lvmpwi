@@ -65,13 +65,20 @@ Some linux distributions do not have python >= 3.7 as the standard python3 versi
 ### Run container
 
     poetry run container_start
+    
     # with pwi4 port 8220 exposed
     poetry run container_start --debug
     poetry run container_stop
-    # run container with rdp
+    
+    # run container with vnc - uses a free port between 5900 - 5909
     poetry run container_start --without-ui
-    # linux ( should also work under windows with MS rdesktop) Password: lvmt
-    xfreerdp  +glyph-cache /relax-order-checks /v:YOUR_HOST
+    
+    # start multiple pwi container with simulation screen size for vnc sessions
+    poetry run container_build cointainer_start --simulator --name=lvm.sci.pwi&
+    poetry run container_start --simulator --geom=800x600 --name=lvm.skye.pwi&
+    poetry run container_start --simulator --geom=800x600 --name=lvm.skyw.pwi&
+    poetry run container_start --simulator --geom=800x600 --name=lvm.spec.pwi&
+    
     # run autotuner from container
     # Note: the standard autotuner needs opengl, which is not available with tigervnc/tightvnc, only with turbovnc and native display.
     poetry run container_autotuner
