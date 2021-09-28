@@ -75,9 +75,9 @@ Some linux distributions do not have python >= 3.7 as the standard python3 versi
     
     # start multiple pwi container with simulation screen size for vnc sessions
     poetry run container_build cointainer_start --simulator --name=lvm.sci.pwi&
-    poetry run container_start --simulator --geom=800x600 --name=lvm.skye.pwi&
-    poetry run container_start --simulator --geom=800x600 --name=lvm.skyw.pwi&
-    poetry run container_start --simulator --geom=800x600 --name=lvm.spec.pwi&
+    poetry run container_start --simulator --geom=800x600 --without-ui --name=lvm.skye.pwi&
+    poetry run container_start --simulator --geom=800x600 --without-ui --name=lvm.skyw.pwi&
+    poetry run container_start --simulator --geom=800x600 --without-ui --name=lvm.spec.pwi&
     
     # run autotuner from container
     # Note: the standard autotuner needs opengl, which is not available with tigervnc/tightvnc, only with turbovnc and native display.
