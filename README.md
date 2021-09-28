@@ -74,7 +74,7 @@ Some linux distributions do not have python >= 3.7 as the standard python3 versi
     poetry run container_start --without-ui
     
     # start multiple pwi container with simulation screen size for vnc sessions
-    poetry run container_build cointainer_start --simulator --name=lvm.sci.pwi&
+    poetry run container_start --simulator --name=lvm.sci.pwi&
     poetry run container_start --simulator --geom=800x600 --without-ui --name=lvm.skye.pwi&
     poetry run container_start --simulator --geom=800x600 --without-ui --name=lvm.skyw.pwi&
     poetry run container_start --simulator --geom=800x600 --without-ui --name=lvm.spec.pwi&
