@@ -173,8 +173,7 @@ async def waitUntilEndOfMovement(command: Command, pwi: PWI4):
 @parser.command()
 @click.argument("RA_H", type=float)
 @click.argument("DEG_D", type=float)
-@click.option("--apparent", type=bool, default=False)
-async def gotoRaDecJ2000(command: Command, pwi: PWI4, ra_h: float, deg_d: float, apparent: bool):
+async def gotoRaDecJ2000(command: Command, pwi: PWI4, ra_h: float, deg_d: float):
     """mount goto_ra_dec_j2000"""
 
     try:
