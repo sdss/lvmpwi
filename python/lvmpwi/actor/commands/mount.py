@@ -134,15 +134,15 @@ async def setSlewTimeConstant(command: Command, pwi: PWI4, time: int):
 
 
 
-async def waitUntilEndOfMovement(command: Command, pwi: PWI4):
+async def waitUntilEndOfSlew(command: Command, pwi: PWI4):
     while(True):
         status = pwi.status()
         command.info(
             is_slewing=status.mount.is_slewing,
-            dec_j2000_degs=status.mount.dec_j2000_degs,
             ra_j2000_hours=status.mount.ra_j2000_hours,
-            dec_apparent_degs=status.mount.dec_apparent_degs,
+            dec_j2000_degs=status.mount.dec_j2000_degs,
             ra_apparent_hours=status.mount.ra_apparent_hours,
+            dec_apparent_degs=status.mount.dec_apparent_degs,
             altitude_degs=status.mount.altitude_degs,
             azimuth_degs=status.mount.azimuth_degs,
             field_angle_here_degs=status.mount.field_angle_here_degs,
@@ -179,12 +179,12 @@ async def gotoRaDecJ2000(command: Command, pwi: PWI4, ra_h: float, deg_d: float)
     try:
         pwi.mount_goto_ra_dec_j2000(ra_h, deg_d)
     
-        await waitUntilEndOfMovement(command, pwi)
+        await waitUntilEndOfSlew(command, pwi)
     
         status = pwi.status()
         return command.finish(
-            dec_j2000_degs = status.mount.dec_j2000_degs,
             ra_j2000_hours = status.mount.ra_j2000_hours,
+            dec_j2000_degs = status.mount.dec_j2000_degs,
         )
     except Exception as ex:
         return command.fail(error=ex.__repr__())
@@ -198,12 +198,12 @@ async def gotoRaDecApparent(command: Command, pwi: PWI4, ra_h: float, deg_d: flo
     try:
         pwi.mount_goto_ra_dec_apparent(ra_h, deg_d)
 
-        await waitUntilEndOfMovement(command, pwi)
+        await waitUntilEndOfSlew(command, pwi)
     
         status = pwi.status()
         return command.finish(
-            dec_apparent_degs = status.mount.dec_apparent_degs,
             ra_apparent_hours = status.mount.ra_apparent_hours,
+            dec_apparent_degs = status.mount.dec_apparent_degs,
         )
     
     except Exception as ex:
@@ -219,7 +219,7 @@ async def gotoAltAzJ2000(command: Command, pwi: PWI4, alt_d: float, az_d: float)
     try:
         pwi.mount_goto_alt_az(alt_d, az_d)
     
-        await waitUntilEndOfMovement(command, pwi)
+        await waitUntilEndOfSlew(command, pwi)
     
         status = pwi.status()
         return command.finish(
@@ -238,7 +238,7 @@ async def findHome(command: Command, pwi: PWI4):
     try:
         pwi.mount_find_home()
     
-        await waitUntilEndOfMovement(command, pwi)
+        await waitUntilEndOfSlew(command, pwi)
 
         status = pwi.status()
         return command.finish(
@@ -263,7 +263,7 @@ async def park(command: Command, pwi: PWI4):
     try:
         pwi.mount_park()
 
-        await waitUntilEndOfMovement(command, pwi)
+        await waitUntilEndOfSlew(command, pwi)
 
         status = pwi.status()
         return command.finish(
@@ -291,7 +291,7 @@ async def parkHere(command: Command, pwi: PWI4):
     try:
         pwi.mount_park_here()
 
-        await waitUntilEndOfMovement(command, pwi)
+        await waitUntilEndOfSlew(command, pwi)
 
         status = pwi.status()
         return command.finish(
@@ -309,6 +309,39 @@ async def parkHere(command: Command, pwi: PWI4):
         return command.fail(error=ex.__repr__())
 
 
+async def waitUntilAxisErrorIsBelowLimit(command: Command, pwi: PWI4, axis_error=0.2):
+    while(True):
+        for i in range(5):
+            status = pwi.status()
+            if status.mount.axis0.rms_error_arcsec < axis_error and status.mount.axis1.rms_error_arcsec < axis_error:
+                return
+            await asyncio.sleep(0.1)
+        command.info(
+            is_slewing=status.mount.is_slewing,
+            ra_j2000_hours=status.mount.ra_j2000_hours,
+            dec_j2000_degs=status.mount.dec_j2000_degs,
+            ra_apparent_hours=status.mount.ra_apparent_hours,
+            dec_apparent_degs=status.mount.dec_apparent_degs,
+            altitude_degs=status.mount.altitude_degs,
+            azimuth_degs=status.mount.azimuth_degs,
+            field_angle_here_degs=status.mount.field_angle_here_degs,
+            field_angle_rate_at_target_degs_per_sec=status.mount.field_angle_rate_at_target_degs_per_sec,
+            field_angle_at_target_degs=status.mount.field_angle_at_target_degs,
+            axis0 = {
+                'dist_to_target_arcsec': status.mount.axis0.dist_to_target_arcsec,
+                'position_degs': status.mount.axis0.position_degs,
+                'rms_error_arcsec': status.mount.axis0.rms_error_arcsec,
+                'servo_error_arcsec': status.mount.axis0.servo_error_arcsec,
+            },
+            axis1 = {
+                'dist_to_target_arcsec': status.mount.axis1.dist_to_target_arcsec,
+                'position_degs': status.mount.axis1.position_degs,
+                'rms_error_arcsec': status.mount.axis1.rms_error_arcsec,
+                'servo_error_arcsec': status.mount.axis1.servo_error_arcsec,
+            },
+        )
+            
+        
 
 @parser.command()
 # AXIS_reset
@@ -367,7 +400,7 @@ async def offset(command: Command, pwi: PWI4, **kwargs):
     try:
         pwi.mount_offset(**{key: value for key, value in kwargs.items() if value is not nan})
 
-        await waitUntilEndOfMovement(command, pwi)
+        await waitUntilAxisErrorIsBelowLimit(command, pwi, axis_error=0.1)
         
         status = pwi.status()
         return command.finish(
@@ -375,9 +408,15 @@ async def offset(command: Command, pwi: PWI4, **kwargs):
             is_connected=status.mount.is_connected,
             is_slewing=status.mount.is_slewing,
             is_enabled=status.mount.axis0.is_enabled & status.mount.axis1.is_enabled,
-            altitude_degs=status.mount.altitude_degs,
+            ra_apparent_hours=status.mount.ra_apparent_hours,
+            ra_j2000_hours=status.mount.ra_j2000_hours,
+            dec_j2000_degs=status.mount.dec_j2000_degs,
             dec_apparent_degs=status.mount.dec_apparent_degs,
+            altitude_degs=status.mount.altitude_degs,
+            azimuth_degs=status.mount.azimuth_degs,
             field_angle_rate_at_target_degs_per_sec=status.mount.field_angle_rate_at_target_degs_per_sec,
+            field_angle_at_target_degs=status.mount.field_angle_at_target_degs,
+            field_angle_here_degs=status.mount.field_angle_here_degs,
             axis0 = {
                 'dist_to_target_arcsec': status.mount.axis0.dist_to_target_arcsec,
                 'is_enabled': status.mount.axis0.is_enabled,
@@ -392,20 +431,6 @@ async def offset(command: Command, pwi: PWI4, **kwargs):
                 'rms_error_arcsec': status.mount.axis1.rms_error_arcsec,
                 'servo_error_arcsec': status.mount.axis1.servo_error_arcsec,
             },
-            dec_j2000_degs=status.mount.dec_j2000_degs,
-            geometry=status.mount.geometry,
-            model = {
-                'filename': status.mount.model.filename,
-                'num_points_enabled': status.mount.model.num_points_enabled,
-                'num_points_total': status.mount.model.num_points_total,
-                
-                'rms_error_arcsec': status.mount.model.rms_error_arcsec,
-            },
-            field_angle_at_target_degs=status.mount.field_angle_at_target_degs,
-            ra_apparent_hours=status.mount.ra_apparent_hours,
-            azimuth_degs=status.mount.azimuth_degs,
-            field_angle_here_degs=status.mount.field_angle_here_degs,
-            ra_j2000_hours=status.mount.ra_j2000_hours
         )
 
 
