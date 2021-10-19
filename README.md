@@ -72,6 +72,12 @@ Some linux distributions do not have python >= 3.7 as the standard python3 versi
     
     # run container with vnc - uses a free port between 5900 - 5909
     poetry run container_start --without-ui
+   
+    # run container with killing current instance
+    poetry run container_start --kill
+    
+    # run container using the local lvmpwi instead of the git version included into the container
+    poetry run container_start --debug
     
     # start multiple pwi container with simulation screen size for vnc sessions
     poetry run container_start --simulator --name=lvm.sci.pwi&
