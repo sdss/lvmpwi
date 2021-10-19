@@ -75,13 +75,17 @@ def autotuner(name: str, debug:bool):
 @click.option("--lvmt_root", default=lvmt_root, type=str)
 @click.option("--with-ui/--without-ui", default=True)
 @click.option("--name", "-n", default=default_pwi, type=str)
-@click.option("--debug", "-d", default=False, type=bool)
+@click.option("--debug/--no-debug", "-d", default=False)
 @click.option("--simulator/--elmo", default=False)
+@click.option("--kill/--no-kill", default=False)
 @click.option("--geom", "-g", default='800x600', type=str)
-def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool, geom:str):
+def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool, kill:bool, geom:str):
     vnc_port=None
     lvmt_image = f"localhost/{lvmt_image_name}"
 
+    if kill:
+        subprocess.run(shlex.split(f"podman kill {name}"))
+        
     run_base = f"--rm -d --name {name}"
     system_xauthority = getXauthority()
     if with_ui and os.environ.get("DISPLAY") and system_xauthority:
@@ -91,8 +95,6 @@ def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool, g
     else:
         vnc_port = next_free_port()
         run_base +=  f" -p {vnc_port}:5900 -e LVMT_RMQ={os.getenv('HOSTNAME')} -e PWI_GEOM={geom}"
-
-
 #        run_base +=  f" -p 3389"
         
     if debug:

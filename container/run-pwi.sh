@@ -64,10 +64,8 @@ start_actor() {
     fi
     sleep 1
     if [ $PWI_DEBUG ]; then 
-        PYTHONPATH=$LVMT_PATH/python/:$PYTHONPATH
+        export PYTHONPATH=$LVMT_PATH/python
     fi
-    
-    echo $PYTHONPATH
     
     python3 $LVMT_PATH/python/lvmpwi/__main__.py -c $LVMT_PATH/python/lvmpwi/etc/$PWI_NAME.yml start 
 }

@@ -38,7 +38,7 @@ RUN apt-get update \
         mono-basic-dbg
         
 
-RUN apt install -y  python3-setuptools python3-pip python3-toml git && \
+RUN apt install -y python3-setuptools python3-pip python3-toml git && \
     cd /root && \
     (git clone https://github.com/sdss/lvmpwi.git && \
     cd lvmpwi && \
