@@ -31,15 +31,51 @@ class lvmpwi(AMQPActor):
     ):
         super().__init__(*args, **kwargs)
         
-        # Todo: fix schema
-        
         self.schema = {
-            "type": "object",
-            "properties": {
-                "State": {"type": "string"},
-                "Units": {"type": "string"},
-            },
-            "additionalProperties": True,
+                    "type": "object",
+                    "properties": {
+                       "is_connected": {"type": "boolean"},
+                       "is_slewing": {"type": "boolean"},
+                       "is_enabled": {"type": "boolean"},
+                       "is_tracking": {"type": "boolean"},
+
+                       "ra_j2000_hours" : {"type": "number"},
+                       "dec_j2000_degs" : {"type": "number"},
+                       
+                       "ra_apparent_hours" : {"type": "number"},
+                       "dec_apparent_degs" : {"type": "number"},
+
+                       "altitude_degs" : {"type": "number"},
+                       "azimuth_degs" : {"type": "number"},
+
+                       "field_angle_at_target_degs" : {"type": "number"},
+                       "field_angle_here_degs" : {"type": "number"},
+                       "field_angle_rate_at_target_degs_per_sec" : {"type": "number"},
+
+                       "axis0": {
+                           "dist_to_target_arcsec" : {"type": "number"},
+                           "is_enabled" : {"type": "boolean"},
+                           "position_degs" : {"type": "number"},
+                           "rms_error_arcsec" : {"type": "number"},
+                           "servo_error_arcsec" : {"type": "number"},
+                        },
+                       "axis1": {
+                           "dist_to_target_arcsec" : {"type": "number"},
+                           "is_enabled" : {"type": "boolean"},
+                           "position_degs" : {"type": "number"},
+                           "rms_error_arcsec" : {"type": "number"},
+                           "servo_error_arcsec" : {"type": "number"},
+                        },
+                       "model": {
+                           "filename" : {"type": "string"},
+                           "num_points_enabled" : {"type": "boolean"},
+                           "position_degs" : {"type": "number"},
+                           "num_points_total" : {"type": "number"},
+                           "rms_error_arcsec" : {"type": "number"},
+                        },
+                       "geometry" : {"type": "number"},
+                     },
+                     "additionalProperties": False,
         }
 
         self.load_schema(self.schema, is_file=False)

@@ -21,22 +21,6 @@ from lvmpwi.pwi import PWI4
 
 @parser.command()
 @click.argument("enable", type=bool)
-async def setSomething(command: Command, pwi: PWI4, enable:bool):
-    """set mount connected true/false """
-
-    try:
-        status = pwi.mount_connect() if enable else pwi.mount_disconnect()
-
-        return command.finish(
-            isconnected = status.mount.is_connected
-        )
-
-    except Exception as ex:
-        return command.fail(error=ex)
-
-
-@parser.command()
-@click.argument("enable", type=bool)
 async def setConnected(command: Command, pwi: PWI4, enable:bool):
     """set mount connected true/false """
 
@@ -162,21 +146,27 @@ async def waitUntilEndOfSlew(command: Command, pwi: PWI4):
         
         command.info(
             is_slewing=status.mount.is_slewing,
+            
             ra_j2000_hours=status.mount.ra_j2000_hours,
             dec_j2000_degs=status.mount.dec_j2000_degs,
+            
             ra_apparent_hours=status.mount.ra_apparent_hours,
             dec_apparent_degs=status.mount.dec_apparent_degs,
+            
             altitude_degs=status.mount.altitude_degs,
             azimuth_degs=status.mount.azimuth_degs,
+            
             field_angle_here_degs=status.mount.field_angle_here_degs,
             field_angle_rate_at_target_degs_per_sec=status.mount.field_angle_rate_at_target_degs_per_sec,
             field_angle_at_target_degs=status.mount.field_angle_at_target_degs,
+            
             axis0 = {
                 'dist_to_target_arcsec': status.mount.axis0.dist_to_target_arcsec,
                 'position_degs': status.mount.axis0.position_degs,
                 'rms_error_arcsec': status.mount.axis0.rms_error_arcsec,
                 'servo_error_arcsec': status.mount.axis0.servo_error_arcsec,
             },
+            
             axis1 = {
                 'dist_to_target_arcsec': status.mount.axis1.dist_to_target_arcsec,
                 'position_degs': status.mount.axis1.position_degs,
@@ -347,21 +337,27 @@ async def waitUntilAxisErrorIsBelowLimit(command: Command, pwi: PWI4, axis_error
 
         command.info(
             is_slewing=status.mount.is_slewing,
+            
             ra_j2000_hours=status.mount.ra_j2000_hours,
             dec_j2000_degs=status.mount.dec_j2000_degs,
+            
             ra_apparent_hours=status.mount.ra_apparent_hours,
             dec_apparent_degs=status.mount.dec_apparent_degs,
+            
             altitude_degs=status.mount.altitude_degs,
             azimuth_degs=status.mount.azimuth_degs,
+            
             field_angle_here_degs=status.mount.field_angle_here_degs,
             field_angle_rate_at_target_degs_per_sec=status.mount.field_angle_rate_at_target_degs_per_sec,
             field_angle_at_target_degs=status.mount.field_angle_at_target_degs,
+            
             axis0 = {
                 'dist_to_target_arcsec': status.mount.axis0.dist_to_target_arcsec,
                 'position_degs': status.mount.axis0.position_degs,
                 'rms_error_arcsec': status.mount.axis0.rms_error_arcsec,
                 'servo_error_arcsec': status.mount.axis0.servo_error_arcsec,
             },
+            
             axis1 = {
                 'dist_to_target_arcsec': status.mount.axis1.dist_to_target_arcsec,
                 'position_degs': status.mount.axis1.position_degs,
@@ -438,15 +434,20 @@ async def offset(command: Command, pwi: PWI4, **kwargs):
             is_connected=status.mount.is_connected,
             is_slewing=status.mount.is_slewing,
             is_enabled=status.mount.axis0.is_enabled & status.mount.axis1.is_enabled,
-            ra_apparent_hours=status.mount.ra_apparent_hours,
+            
             ra_j2000_hours=status.mount.ra_j2000_hours,
             dec_j2000_degs=status.mount.dec_j2000_degs,
+
+            ra_apparent_hours=status.mount.ra_apparent_hours,
             dec_apparent_degs=status.mount.dec_apparent_degs,
+
             altitude_degs=status.mount.altitude_degs,
             azimuth_degs=status.mount.azimuth_degs,
+
             field_angle_rate_at_target_degs_per_sec=status.mount.field_angle_rate_at_target_degs_per_sec,
             field_angle_at_target_degs=status.mount.field_angle_at_target_degs,
             field_angle_here_degs=status.mount.field_angle_here_degs,
+
             axis0 = {
                 'dist_to_target_arcsec': status.mount.axis0.dist_to_target_arcsec,
                 'is_enabled': status.mount.axis0.is_enabled,
@@ -454,6 +455,7 @@ async def offset(command: Command, pwi: PWI4, **kwargs):
                 'rms_error_arcsec': status.mount.axis0.rms_error_arcsec,
                 'servo_error_arcsec': status.mount.axis0.servo_error_arcsec,
             },
+
             axis1 = {
                 'dist_to_target_arcsec': status.mount.axis1.dist_to_target_arcsec,
                 'is_enabled': status.mount.axis1.is_enabled,
