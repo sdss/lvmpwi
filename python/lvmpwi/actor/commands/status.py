@@ -59,7 +59,7 @@ async def status(command: Command, pwi: PWI4):
         )
             
     except Exception as ex:
-        return command.fail(error=ex.__repr__())
+        return command.fail(error=ex)
 
 
 @parser.command()
@@ -77,5 +77,5 @@ async def site(command: Command, pwi: PWI4):
         )
 
     except Exception as ex:
-        return command.fail(error=ex.__repr__())
+        return command.fail(error=ex)
 

@@ -14,9 +14,25 @@ import click
 import asyncio
 from clu.command import Command
 
+from lvmpwi.actor.exceptions import *
 from lvmpwi.actor.commands import parser
 from lvmpwi.pwi import PWI4
 
+
+@parser.command()
+@click.argument("enable", type=bool)
+async def setSomething(command: Command, pwi: PWI4, enable:bool):
+    """set mount connected true/false """
+
+    try:
+        status = pwi.mount_connect() if enable else pwi.mount_disconnect()
+
+        return command.finish(
+            isconnected = status.mount.is_connected
+        )
+
+    except Exception as ex:
+        return command.fail(error=ex)
 
 
 @parser.command()
@@ -32,7 +48,7 @@ async def setConnected(command: Command, pwi: PWI4, enable:bool):
         )
 
     except Exception as ex:
-        return command.fail(error=ex.__repr__())
+        return command.fail(error=ex)
 
 
 @parser.command()
@@ -62,7 +78,7 @@ async def setEnabled(command: Command, pwi: PWI4, enable:bool, axis0:bool, axis1
     )
 
     except Exception as ex:
-        return command.fail(error=ex.__repr__())
+        return command.fail(error=ex)
 
 
 @parser.command()
@@ -81,7 +97,7 @@ async def setTracking(command: Command, pwi: PWI4, enable:bool):
         )
     
     except Exception as ex:
-        return command.fail(error=ex.__repr__())
+        return command.fail(error=ex)
 
 
 @parser.command()
@@ -107,7 +123,7 @@ async def stop(command: Command, pwi: PWI4):
         )
 
     except Exception as ex:
-        return command.fail(error=ex.__repr__())
+        return command.fail(error=ex)
 
 
 @parser.command()
@@ -129,14 +145,21 @@ async def setSlewTimeConstant(command: Command, pwi: PWI4, time: int):
         )
     
     except Exception as ex:
-        return command.fail(error=ex.__repr__())
+        return command.fail(error=ex)
 
 
+def checkIfMountCanMove(status):
+        if not status.mount.is_connected:
+            raise PwiActorMountNotConnected()
+
+        if not (status.mount.axis0.is_enabled & status.mount.axis1.is_enabled):
+            raise PwiActorMountAxisNotEnabled()
 
 
 async def waitUntilEndOfSlew(command: Command, pwi: PWI4):
     while(True):
         status = pwi.status()
+        
         command.info(
             is_slewing=status.mount.is_slewing,
             ra_j2000_hours=status.mount.ra_j2000_hours,
@@ -168,8 +191,6 @@ async def waitUntilEndOfSlew(command: Command, pwi: PWI4):
             await asyncio.sleep(0.1)
             
         
-
-
 @parser.command()
 @click.argument("RA_H", type=float)
 @click.argument("DEG_D", type=float)
@@ -177,8 +198,9 @@ async def gotoRaDecJ2000(command: Command, pwi: PWI4, ra_h: float, deg_d: float)
     """mount goto_ra_dec_j2000"""
 
     try:
-        pwi.mount_goto_ra_dec_j2000(ra_h, deg_d)
-    
+        status = pwi.mount_goto_ra_dec_j2000(ra_h, deg_d)
+        checkIfMountCanMove(status)
+        
         await waitUntilEndOfSlew(command, pwi)
     
         status = pwi.status()
@@ -187,7 +209,8 @@ async def gotoRaDecJ2000(command: Command, pwi: PWI4, ra_h: float, deg_d: float)
             dec_j2000_degs = status.mount.dec_j2000_degs,
         )
     except Exception as ex:
-        return command.fail(error=ex.__repr__())
+        return command.fail(error=ex)
+
 
 @parser.command()
 @click.argument("RA_H", type=float)
@@ -196,7 +219,8 @@ async def gotoRaDecApparent(command: Command, pwi: PWI4, ra_h: float, deg_d: flo
     """mount goto_ra_dec_apparent """
 
     try:
-        pwi.mount_goto_ra_dec_apparent(ra_h, deg_d)
+        status = pwi.mount_goto_ra_dec_apparent(ra_h, deg_d)
+        checkIfMountCanMove(status)
 
         await waitUntilEndOfSlew(command, pwi)
     
@@ -207,7 +231,7 @@ async def gotoRaDecApparent(command: Command, pwi: PWI4, ra_h: float, deg_d: flo
         )
     
     except Exception as ex:
-        return command.fail(error=ex.__repr__())
+        return command.fail(error=ex)
 
 
 @parser.command()
@@ -217,8 +241,9 @@ async def gotoAltAzJ2000(command: Command, pwi: PWI4, alt_d: float, az_d: float)
     """mount goto_alt_az_j2000"""
 
     try:
-        pwi.mount_goto_alt_az(alt_d, az_d)
-    
+        status = pwi.mount_goto_alt_az(alt_d, az_d)
+        checkIfMountCanMove(status)
+
         await waitUntilEndOfSlew(command, pwi)
     
         status = pwi.status()
@@ -228,7 +253,7 @@ async def gotoAltAzJ2000(command: Command, pwi: PWI4, alt_d: float, az_d: float)
         )
     
     except Exception as ex:
-        return command.fail(error=ex.__repr__())
+        return command.fail(error=ex)
 
 
 @parser.command()
@@ -236,7 +261,8 @@ async def findHome(command: Command, pwi: PWI4):
     """mount find_home"""
 
     try:
-        pwi.mount_find_home()
+        status = pwi.mount_find_home()
+        checkIfMountCanMove(status)
     
         await waitUntilEndOfSlew(command, pwi)
 
@@ -253,7 +279,7 @@ async def findHome(command: Command, pwi: PWI4):
         )
     
     except Exception as ex:
-        return command.fail(error=ex.__repr__())
+        return command.fail(error=ex)
 
 
 @parser.command()
@@ -261,7 +287,8 @@ async def park(command: Command, pwi: PWI4):
     """mount park"""
 
     try:
-        pwi.mount_park()
+        status = pwi.mount_park()
+        checkIfMountCanMove(status)
 
         await waitUntilEndOfSlew(command, pwi)
 
@@ -278,7 +305,7 @@ async def park(command: Command, pwi: PWI4):
         )
     
     except Exception as ex:
-        return command.fail(error=ex.__repr__())
+        return command.fail(error=ex)
 
 
 
@@ -289,7 +316,8 @@ async def parkHere(command: Command, pwi: PWI4):
     """mount park"""
 
     try:
-        pwi.mount_park_here()
+        status = pwi.mount_park_here()
+        checkIfMountCanMove(status)
 
         await waitUntilEndOfSlew(command, pwi)
 
@@ -306,7 +334,7 @@ async def parkHere(command: Command, pwi: PWI4):
         )
     
     except Exception as ex:
-        return command.fail(error=ex.__repr__())
+        return command.fail(error=ex)
 
 
 async def waitUntilAxisErrorIsBelowLimit(command: Command, pwi: PWI4, axis_error=0.2):
@@ -316,6 +344,7 @@ async def waitUntilAxisErrorIsBelowLimit(command: Command, pwi: PWI4, axis_error
             if status.mount.axis0.rms_error_arcsec < axis_error and status.mount.axis1.rms_error_arcsec < axis_error:
                 return
             await asyncio.sleep(0.1)
+
         command.info(
             is_slewing=status.mount.is_slewing,
             ra_j2000_hours=status.mount.ra_j2000_hours,
@@ -398,7 +427,8 @@ async def offset(command: Command, pwi: PWI4, **kwargs):
     
 
     try:
-        pwi.mount_offset(**{key: value for key, value in kwargs.items() if value is not nan})
+        status = pwi.mount_offset(**{key: value for key, value in kwargs.items() if value is not nan})
+        checkIfMountCanMove(status)
 
         await waitUntilAxisErrorIsBelowLimit(command, pwi, axis_error=0.1)
         
@@ -435,6 +465,6 @@ async def offset(command: Command, pwi: PWI4, **kwargs):
 
 
     except Exception as ex:
-        return command.fail(error=ex.__repr__())
+        return command.fail(error=ex)
 
     
