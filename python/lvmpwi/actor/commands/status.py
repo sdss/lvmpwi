@@ -2,7 +2,7 @@
 #
 # @Author: Florian Briegel (briegel@mpia.de
 # @Date: 2021-07-06
-# @Filename: __init__.py
+# @Filename: status.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
 from __future__ import annotations
@@ -64,24 +64,6 @@ async def status(command: Command, pwi: PWI4):
             geometry=status.mount.geometry,
         )
             
-    except Exception as ex:
-        return command.fail(error=ex)
-
-
-@parser.command()
-async def site(command: Command, pwi: PWI4):
-    """site status"""
-
-    try:
-        status = pwi.status()
-
-        return command.finish(
-            height_meters=status.site.height_meters,
-            latitude_degs=status.site.latitude_degs,
-            lmst_hours=status.site.lmst_hours,
-            longitude_degs=status.site.longitude_degs,
-        )
-
     except Exception as ex:
         return command.fail(error=ex)
 

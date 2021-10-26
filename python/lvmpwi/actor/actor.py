@@ -12,8 +12,10 @@ from contextlib import suppress
 
 from clu.actor import AMQPActor
 
+from lvmpwi import __version__
 from lvmpwi.actor.commands import parser as pwi_command_parser
 from lvmpwi.pwi import PWI4
+
 
 __all__ = ["lvmpwi"]
 
@@ -108,7 +110,7 @@ class lvmpwi(AMQPActor):
         """Creates an actor from a configuration file."""
 
 
-        instance = super(lvmpwi, cls).from_config(config, *args, **kwargs)
+        instance = super(lvmpwi, cls).from_config(config, *args, version=__version__,**kwargs)
 
         instance.log.info("Hello world")
 

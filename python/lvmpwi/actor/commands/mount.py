@@ -2,7 +2,7 @@
 #
 # @Author: Florian Briegel (briegel@mpia.de
 # @Date: 2021-07-06
-# @Filename: __init__.py
+# @Filename: mount.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
 
@@ -19,7 +19,7 @@ from lvmpwi.actor.commands import parser
 from lvmpwi.pwi import PWI4
 
 
-@parser.command()
+@parser.command("setConnected")
 @click.argument("enable", type=bool)
 async def setConnected(command: Command, pwi: PWI4, enable:bool):
     """set mount connected true/false """
@@ -35,7 +35,7 @@ async def setConnected(command: Command, pwi: PWI4, enable:bool):
         return command.fail(error=ex)
 
 
-@parser.command()
+@parser.command("setEnabled")
 @click.argument("enable", type=bool)
 @click.option("--axis0", type=bool, default=True)
 @click.option("--axis1", type=bool, default=True)
@@ -65,7 +65,7 @@ async def setEnabled(command: Command, pwi: PWI4, enable:bool, axis0:bool, axis1
         return command.fail(error=ex)
 
 
-@parser.command()
+@parser.command("setTracking")
 @click.argument("enable", type=bool)
 async def setTracking(command: Command, pwi: PWI4, enable:bool):
     """mount enable/disable tracking"""
@@ -110,7 +110,7 @@ async def stop(command: Command, pwi: PWI4):
         return command.fail(error=ex)
 
 
-@parser.command()
+@parser.command("setSlewTimeConstant")
 @click.argument("TIME", type=int)
 async def setSlewTimeConstant(command: Command, pwi: PWI4, time: int):
     """mount set_slew_time_constant"""
@@ -181,7 +181,7 @@ async def waitUntilEndOfSlew(command: Command, pwi: PWI4):
             await asyncio.sleep(0.1)
             
         
-@parser.command()
+@parser.command("gotoRaDecJ2000")
 @click.argument("RA_H", type=float)
 @click.argument("DEG_D", type=float)
 async def gotoRaDecJ2000(command: Command, pwi: PWI4, ra_h: float, deg_d: float):
@@ -202,7 +202,7 @@ async def gotoRaDecJ2000(command: Command, pwi: PWI4, ra_h: float, deg_d: float)
         return command.fail(error=ex)
 
 
-@parser.command()
+@parser.command("gotoRaDecApparent")
 @click.argument("RA_H", type=float)
 @click.argument("DEG_D", type=float)
 async def gotoRaDecApparent(command: Command, pwi: PWI4, ra_h: float, deg_d: float):
@@ -224,7 +224,7 @@ async def gotoRaDecApparent(command: Command, pwi: PWI4, ra_h: float, deg_d: flo
         return command.fail(error=ex)
 
 
-@parser.command()
+@parser.command("gotoAltAzJ2000")
 @click.argument("ALT_D", type=float)
 @click.argument("AZ_D", type=float)
 async def gotoAltAzJ2000(command: Command, pwi: PWI4, alt_d: float, az_d: float):
@@ -246,7 +246,7 @@ async def gotoAltAzJ2000(command: Command, pwi: PWI4, alt_d: float, az_d: float)
         return command.fail(error=ex)
 
 
-@parser.command()
+@parser.command("findHome")
 async def findHome(command: Command, pwi: PWI4):
     """mount find_home"""
 
@@ -301,7 +301,7 @@ async def park(command: Command, pwi: PWI4):
 
 # pwi4 command: mount_set_park_here(self):
 
-@parser.command()
+@parser.command("parkHere")
 async def parkHere(command: Command, pwi: PWI4):
     """mount park"""
 

@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+#
+# @Author: Florian Briegel (briegel@mpia.de
+# @Date: 2021-07-06
+# @Filename: __init__.py
+# @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
+
 import glob
 import importlib
 import os
@@ -5,6 +12,8 @@ import os
 import click
 from clu.parsers.click import CluGroup, help_, ping, version
 
+from clu.parsers.click import command_parser
+from clu.command import Command
 
 # import warnings
 
@@ -21,6 +30,16 @@ parser.add_command(ping)
 parser.add_command(version)
 parser.add_command(help_)
 
+# TODO: fix me
+@command_parser.command(name='__commands')
+@click.pass_context
+def __commands(ctx, command: Command, *args):
+    """Returns all commands."""
+
+    # we have to use the help key for the command list, dont want to change the standard model.
+    command.finish(help=[k for k in ctx.command.commands.keys() if k[:2] != '__'])
+
+parser.add_command(__commands)
 
 # Autoimport all modules in this directory so that they are added to the parser.
 
