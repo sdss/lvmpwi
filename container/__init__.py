@@ -88,13 +88,16 @@ def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool, k
         
     run_base = f"--rm -d --name {name}"
     system_xauthority = getXauthority()
+    
+    run_base += f" -e LVMT_RMQ={os.getenv('HOSTNAME')}"
+    
     if with_ui and os.environ.get("DISPLAY") and system_xauthority:
         run_base +=  f" -e DISPLAY -v {system_xauthority}:/root/.Xauthority:Z --ipc=host  --network=host"
         if os.path.exists('/dev/dri'):
-            run_base +=  ' --device /dev/dri'
+            run_base += ' --device /dev/dri'
     else:
         vnc_port = next_free_port()
-        run_base +=  f" -p {vnc_port}:5900 -e LVMT_RMQ={os.getenv('HOSTNAME')} -e PWI_GEOM={geom}"
+        run_base +=  f" -p {vnc_port}:5900 -e PWI_GEOM={geom}"
 #        run_base +=  f" -p 3389"
         
     if debug:

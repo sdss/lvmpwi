@@ -1,4 +1,10 @@
 # Actor configuration for the AMQPActor class
+
+# on some systems guest/guest is disabled for non localhost rabbitmq server access
+#
+# /etc/rabbitmq/rabbitmq.conf:
+# loopback_users.guest = false
+
 actor:
     name: lvm.pwi
     host: localhost
