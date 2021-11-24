@@ -10,15 +10,10 @@ import importlib
 import os
 
 import click
-from clu.parsers.click import CluGroup, help_, ping, version
+from clu.parsers.click import CluGroup, help_, ping, version, get_schema
 
 from clu.parsers.click import command_parser
 from clu.command import Command
-
-# import warnings
-
-
-# from lvmpwi.exceptions import NpsActorUserWarning
 
 
 @click.group(cls=CluGroup)
@@ -29,8 +24,10 @@ def parser(*args):
 parser.add_command(ping)
 parser.add_command(version)
 parser.add_command(help_)
+parser.add_command(get_schema)
 
-# TODO: fix me
+
+# TODO: fix me with cluplus
 @command_parser.command(name='__commands')
 @click.pass_context
 def __commands(ctx, command: Command, *args):
