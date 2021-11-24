@@ -28,7 +28,7 @@ async def setConnected(command: Command, pwi: PWI4, enable:bool):
         status = pwi.mount_connect() if enable else pwi.mount_disconnect()
 
         return command.finish(
-            isconnected = status.mount.is_connected
+            is_connected = status.mount.is_connected
         )
 
     except Exception as ex:
