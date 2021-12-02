@@ -327,7 +327,7 @@ async def parkHere(command: Command, pwi: PWI4):
         return command.fail(error=ex)
 
 
-async def waitUntilAxisErrorIsBelowLimit(command: Command, pwi: PWI4, axis_error=0.2):
+async def waitUntilAxisErrorIsBelowLimit(command: Command, pwi: PWI4, axis_error=0.4):
     while(True):
         for i in range(5):
             status = pwi.status()
@@ -397,6 +397,8 @@ async def waitUntilAxisErrorIsBelowLimit(command: Command, pwi: PWI4, axis_error
 @click.option("--axis1_set_rate_arcsec_per_sec", type=float, default=nan)
 @click.option("--path_set_rate_arcsec_per_sec", type=float, default=nan)
 @click.option("--transverse_set_rate_arcsec_per_sec", type=float, default=nan)
+# Tolerated axis error (option)
+@click.option("--axis_error", type=float, default=0.4)
 async def offset(command: Command, pwi: PWI4, **kwargs):
     """mount offset
      
@@ -425,8 +427,8 @@ async def offset(command: Command, pwi: PWI4, **kwargs):
     try:
         status = pwi.mount_offset(**{key: value for key, value in kwargs.items() if value is not nan})
         checkIfMountCanMove(status)
-
-        await waitUntilAxisErrorIsBelowLimit(command, pwi, axis_error=0.1)
+        
+        await waitUntilAxisErrorIsBelowLimit(command, pwi, kwargs["axis_error"])
         
         status = pwi.status()
         return command.finish(
