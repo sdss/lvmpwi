@@ -3,8 +3,7 @@ name: Docker
 on:
   push:
     tags:
-      - '*' # Exclude pre-releases
-#      - '[0-9]+.[0-9]+.[0-9]+' # Exclude pre-releases
+      - '[0-9]+.[0-9]+.[0-9]+' # Exclude pre-releases
 
 jobs:
   docker:
