@@ -37,12 +37,12 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }} # from Secrets
-          dockerfile: container/Dockerfile
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           push: true
           tags: ghcr.io/${{ steps.set-tags.outputs.TAGS }}
+          dockerfile: container/Dockerfile
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
