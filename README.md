@@ -19,7 +19,18 @@ Lvm Planewave PWI Clu Wrapper
 
 ## Todo
 - Container not using the host network
-    
+
+## Note
+As of version 0.0.9 the container is renamed from ubuntu_lvmt_pwi to lvmpwi
+
+## Quickstart
+In the latest version the container doesnt have to be build, a container is download automatically from github.
+
+    git clone https://github.com/sdss/lvmpwi.git
+    cd lvmtan      
+    poetry run container_start --simulator --name=lvm.sci.pwi&
+
+
 ## Prerequisites
 
 Some linux distributions do not have python >= 3.7 as the standard python3 version.
