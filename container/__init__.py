@@ -90,7 +90,6 @@ def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool, k
        lvmt_image = f"{lvmt_image_source_remote}/{lvmt_image_name}"
 
     vnc_port=None
-    lvmt_image = f"localhost/{lvmt_image_name}"
 
     if kill:
         subprocess.run(shlex.split(f"podman kill {name}"))
