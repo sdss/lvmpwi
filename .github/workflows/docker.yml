@@ -15,6 +15,7 @@ jobs:
       - name: Set docker tags
         id: set-tags
         run: |
+          echo ::set-output name=TAG_LATEST::$USER/$APP:latest
           if [[ $GITHUB_REF == refs/heads/main ]]
           then
             echo ::set-output name=TAGS::$USER/$APP:latest
@@ -42,7 +43,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/${{ steps.set-tags.outputs.TAGS }}
+          tags: |
+            ghcr.io/${{ steps.set-tags.outputs.TAGS }}
+            ghcr.io/${{ steps.set-tags.outputs.TAG_LATEST }}
 #          context: ./container
           file: ./container/Dockerfile
       - name: Image digest

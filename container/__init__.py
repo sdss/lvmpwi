@@ -17,13 +17,15 @@ from pathlib import PosixPath
 
 container_bin = 'podman'
 lvmt_root = os.environ["PWD"]
-lvmt_image_name = 'ubuntu_lvmt_pwi'
+lvmt_image_source_local = "localhost"
+lvmt_image_source_remote = "ghcr.io/sdss"
+lvmt_image_name = 'lvmpwi'
 
 default_pwi = 'lvm.pwi'
 
-# podman run --rm -ti --name pwi --network=host -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z --device /dev/dri -v ~/.Xauthority:/root/.Xauthority:Z  -e PWI_NAME=pwi localhost/ubuntu_lvmt_pwi
+# podman run --rm -ti --name pwi --network=host -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z --device /dev/dri -v ~/.Xauthority:/root/.Xauthority:Z  -e PWI_NAME=pwi localhost/lvmpwi
 
-# podman run --rm -ti --name pwi -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z -e PWI_NAME=pwi localhost/ubuntu_lvmt_pwi
+# podman run --rm -ti --name pwi -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z -e PWI_NAME=pwi localhost/lvmpwi
 
 def isRunning(name: str = default_pwi):
     command = subprocess.run(shlex.split(f"{container_bin} container exists {name}"))
@@ -80,6 +82,13 @@ def autotuner(name: str, debug:bool):
 @click.option("--kill/--no-kill", default=False)
 @click.option("--geom", "-g", default='800x600', type=str)
 def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool, kill:bool, geom:str):
+    if not subprocess.run(shlex.split(f"podman image exists {lvmt_image_source_local}/{lvmt_image_name}")).returncode:
+       lvmt_image = f"{lvmt_image_source_local}/{lvmt_image_name}"
+    else:
+       if subprocess.run(shlex.split(f"podman image exists {lvmt_image_source_remote}/{lvmt_image_name}")).returncode:
+           subprocess.run(shlex.split(f"podman pull {lvmt_image_source_remote}/{lvmt_image_name}:latest"))
+       lvmt_image = f"{lvmt_image_source_remote}/{lvmt_image_name}"
+
     vnc_port=None
     lvmt_image = f"localhost/{lvmt_image_name}"
 
