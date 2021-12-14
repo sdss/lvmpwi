@@ -95,7 +95,7 @@ def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool, k
     run_base = f"--rm -d --name {name}"
     system_xauthority = getXauthority()
     
-    run_base += f" -e LVMT_RMQ={os.getenv('HOST')}"
+    run_base += f" -e LVMT_RMQ={socket.gethostname()}"
     
     if with_ui and os.environ.get("DISPLAY") and system_xauthority:
         run_base +=  f" -e DISPLAY -v {system_xauthority}:/root/.Xauthority:Z --ipc=host  --network=host"
