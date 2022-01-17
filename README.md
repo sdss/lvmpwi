@@ -60,7 +60,7 @@ Some linux distributions do not have python >= 3.7 as the standard python3 versi
     git clone https://github.com/sdss/lvmpwi.git
     cd lvmpwi      
 
-### Build
+### Build (optional)
     # update local py env
     poetry update
     poetry install
