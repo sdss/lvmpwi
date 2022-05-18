@@ -20,6 +20,7 @@ lvmt_root = os.environ["PWD"]
 lvmt_image_source_local = "localhost"
 lvmt_image_source_remote = "ghcr.io/sdss"
 lvmt_image_name = 'lvmpwi'
+lvmt_rmq = socket.gethostname()
 
 default_pwi = 'lvm.pwi'
 
@@ -74,28 +75,29 @@ def autotuner(name: str, debug:bool):
 @click.command()   
 @click.option("--lvmt_root", default=lvmt_root, type=str)
 @click.option("--with-ui/--without-ui", default=True)
+@click.option("--rmq", default=lvmt_rmq, type=str)
 @click.option("--name", "-n", default=default_pwi, type=str)
 @click.option("--debug/--no-debug", "-d", default=False)
 @click.option("--simulator/--elmo", default=False)
 @click.option("--kill/--no-kill", default=False)
 @click.option("--geom", "-g", default='800x600', type=str)
-def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool, kill:bool, geom:str):
-    if not subprocess.run(shlex.split(f"podman image exists {lvmt_image_source_local}/{lvmt_image_name}")).returncode:
+def start(name: str, rmq:str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool, kill:bool, geom:str):
+    if not subprocess.run(shlex.split(f"{container_bin} image exists {lvmt_image_source_local}/{lvmt_image_name}")).returncode:
        lvmt_image = f"{lvmt_image_source_local}/{lvmt_image_name}"
     else:
-       if subprocess.run(shlex.split(f"podman image exists {lvmt_image_source_remote}/{lvmt_image_name}")).returncode:
-           subprocess.run(shlex.split(f"podman pull {lvmt_image_source_remote}/{lvmt_image_name}:latest"))
+       if subprocess.run(shlex.split(f"{container_bin} image exists {lvmt_image_source_remote}/{lvmt_image_name}")).returncode:
+           subprocess.run(shlex.split(f"{container_bin} pull {lvmt_image_source_remote}/{lvmt_image_name}:latest"))
        lvmt_image = f"{lvmt_image_source_remote}/{lvmt_image_name}"
 
     vnc_port=None
 
     if kill:
-        subprocess.run(shlex.split(f"podman kill {name}"))
+        subprocess.run(shlex.split(f"{container_bin} kill {name}"))
         
     run_base = f"--rm -d --name {name}"
     system_xauthority = getXauthority()
     
-    run_base += f" -e LVMT_RMQ={socket.gethostname()}"
+    run_base += f" -e LVMT_RMQ={rmq}"
     
     if with_ui and os.environ.get("DISPLAY") and system_xauthority:
         run_base +=  f" -e DISPLAY -v {system_xauthority}:/root/.Xauthority:Z --ipc=host  --network=host"
@@ -127,7 +129,7 @@ def start(name: str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool, k
     #child.expect('BSC loaded')
     #assert isRunning(name) == True
     command = subprocess.run(shlex.split(f"{run}"))
-    logs = subprocess.run(shlex.split(f"podman logs -f {name}"))
+    logs = subprocess.run(shlex.split(f"{container_bin} logs -f {name}"))
     if vnc_port and os.environ.get("DISPLAY") and system_xauthority:
         vncclient = subprocess.run(shlex.split(f"vncviewer :{vnc_port - 5900}"))
     
