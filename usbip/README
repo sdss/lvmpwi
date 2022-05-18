@@ -14,4 +14,6 @@ Clientside:
  After installing systemd scripts /etc/systemd/system/*.service, the systemd daemon has to be restarted.
  
   sudo systemctl daemon-reload
-
+  sudo systemctrl start usbip_planewave
+  sudo systemctrl enable usbip_planewave
+  sudo systemctrl status usbip_planewave
