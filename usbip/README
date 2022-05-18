@@ -1,5 +1,5 @@
-Copy the above files to its designated areas
-change IP address in /usr/local/sbin/usbip_planewave.sh: SERVER=
+* Copy the above files to its designated areas
+* hange IP address in /usr/local/sbin/usbip_planewave.sh: SERVER=
 
 Serverside:
 
