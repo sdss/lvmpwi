@@ -18,6 +18,7 @@
      - busid 1-1.4 (1cbe:0267)
        Luminary Micro Inc. : unknown product (1cbe:0267)
 
+* Remember the busid of the planewave mount aka Luminary Micro Inc.
        
 # Setup
 
@@ -27,14 +28,14 @@
       /etc/systemd/system/usbipd.service
       /etc/udev/rules.d/20-planewave.rules
 
-* Fix usb id in 20-planewave.rules found before
+* Fix planewave busid in 20-planewave.rules found before
 
 ## Clientside:
 
       /etc/systemd/system/usbip_planewave.service
       /usr/local/sbin/usbip_planewave.sh
 
-* Change IP address and USB ID found before in /usr/local/sbin/usbip_planewave.sh:
+* Change IP address and planewave busid found before in /usr/local/sbin/usbip_planewave.sh:
 
       SERVER=
       BUSID=
