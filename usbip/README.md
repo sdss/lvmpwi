@@ -27,14 +27,14 @@
       /etc/systemd/system/usbipd.service
       /etc/udev/rules.d/20-planewave.rules
 
-* Fix usb id in 20-planewave.rules detected from above.
+* Fix usb id in 20-planewave.rules found before
 
 ## Clientside:
 
       /etc/systemd/system/usbip_planewave.service
       /usr/local/sbin/usbip_planewave.sh
 
-* Change IP address and USB ID from above in /usr/local/sbin/usbip_planewave.sh:
+* Change IP address and USB ID found before in /usr/local/sbin/usbip_planewave.sh:
 
       SERVER=
       BUSID=
