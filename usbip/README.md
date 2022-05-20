@@ -23,7 +23,7 @@
 ## Client side
 Temporary load the kernel module.
 
-    modprobe vhci-hcd
+    sudo modprobe vhci-hcd
 
 Add it to /etc/modules or in a file inside /etc/modprobe.d
 
