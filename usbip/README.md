@@ -1,6 +1,6 @@
 
 # Prerequisites
-## Installation RasperyPi & friends
+## Installation on RasperyPi & friends
 
     sudo apt-get install usbip
     sudo modprobe usbip_host
@@ -19,7 +19,30 @@
        Luminary Micro Inc. : unknown product (1cbe:0267)
 
 * Remember the busid of the planewave mount aka Luminary Micro Inc.
-       
+    
+## Client side
+Temporary load the kernel module.
+
+    modprobe vhci-hcd
+
+Add it to /etc/modules or in a file inside /etc/modprobe.d
+
+    sudo echo 'vhci-hcd' >> /etc/modules
+     
+## Quick check
+      [root@nicelab lvmt]# usbip list -r 192.168.70.55 
+      Exportable USB devices
+      ======================
+       - 192.168.70.55
+            1-1.4: Luminary Micro Inc. : unknown product (1cbe:0267)
+                 : /sys/devices/platform/soc/20980000.usb/usb1/1-1/1-1.4
+                 : Miscellaneous Device / ? / Interface Association (ef/02/01)
+
+      [root@nicelab lvmt]# usbip attach -r 192.168.70.55 -b 1-1.4
+      # quick hack - changing group is way more clean.
+      [root@nicelab lvmt]# chmod 666 /dev/ttyACM*
+
+
 # Setup
 
 ## Serverside:
@@ -43,10 +66,10 @@
  
  After installing systemd scripts /etc/systemd/system/*.service, the systemd daemon has to be restarted.
  
-  sudo systemctl daemon-reload
-  sudo systemctrl start usbip_planewave
-  sudo systemctrl enable usbip_planewave
-  sudo systemctrl status usbip_planewave
+    sudo systemctl daemon-reload
+    sudo systemctrl start usbip_planewave
+    sudo systemctrl enable usbip_planewave
+    sudo systemctrl status usbip_planewave
 
 # TODO
 * Currently this only works for one mount.
