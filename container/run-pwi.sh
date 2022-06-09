@@ -60,7 +60,7 @@ start_actor() {
             > $LVMT_PATH/python/lvmpwi/etc/$PWI_NAME.yml
        sed  -i "s/elmo/simulator/" $LVMT_CONFIG_PATH/Settings/PWI4.cfg
     fi
-    sleep 1
+    sleep 2
     if [ $PWI_DEBUG ]; then 
         export PYTHONPATH=$LVMT_PATH/python
     fi
