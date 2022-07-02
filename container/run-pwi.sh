@@ -56,16 +56,20 @@ use_vnc() {
 start_actor() {
     # lets give the pwi sw some time to startup
     if [ ! -f $LVMT_PATH/python/lvmpwi/etc/$PWI_NAME.yml ]; then
-       cat $LVMT_PATH/python/lvmpwi/etc/lvm.pwi.yml | sed "s/lvm.pwi/$PWI_NAME/; s/host: localhost/host: $LVMT_RMQ/" \
+       cat $LVMT_PATH/python/lvmpwi/etc/lvm.pwi.yml | sed "s/lvm.pwi/$PWI_NAME/; s/host: localhost/host: $LVM_RMQ_HOST/" \
             > $LVMT_PATH/python/lvmpwi/etc/$PWI_NAME.yml
        sed  -i "s/elmo/simulator/" $LVMT_CONFIG_PATH/Settings/PWI4.cfg
     fi
-    sleep 2
+
     if [ $PWI_DEBUG ]; then 
         export PYTHONPATH=$LVMT_PATH/python
     fi
     
-    python3 $LVMT_PATH/python/lvmpwi/__main__.py -c $LVMT_PATH/python/lvmpwi/etc/$PWI_NAME.yml start 
+    while true 
+    do
+       sleep 2
+       python3 $LVMT_PATH/python/lvmpwi/__main__.py -c $LVMT_PATH/python/lvmpwi/etc/$PWI_NAME.yml start --debug
+    done
 }
 
 setup_pwi4
