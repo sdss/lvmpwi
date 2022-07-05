@@ -21,6 +21,12 @@
 * Remember the busid of the planewave mount aka Luminary Micro Inc.
     
 ## Client side
+- Ubuntu
+    apt-get install -y linux-tools-generic
+
+- OpenSuse
+    zypper install -y usbip
+
 Temporary load the kernel module.
 
     sudo modprobe vhci-hcd
