@@ -23,7 +23,7 @@ RUN apt-get update && \
 #     apt-add-repository "deb http://dl.winehq.org/wine-builds/ubuntu/ $(lsb_release -cs) main" && \
 #     apt install -y --install-recommends winehq-stable winetricks
 
-    
+
 RUN apt-get update \
     && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
         wget \

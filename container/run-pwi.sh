@@ -86,8 +86,6 @@ use_vnc() {
     fluxbox &
 }
 
-
-
 setup_pwi4
 
 if [ -z $DISPLAY ]; then
