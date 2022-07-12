@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 ## Get some karma ##
 MAINTAINER Florian Briegel, briegel@mpia.de
@@ -69,7 +69,9 @@ RUN mkdir -p $PWI_AUTOTUNER_PATH && \
         
 EXPOSE 3389/tcp
 
-WORKDIR /root/lvmt
+WORKDIR /root
 
-CMD ["/root/lvmt/container/run-pwi.sh"]
+COPY run-pwi.sh .
+
+CMD ["/root/run-pwi.sh"]
 

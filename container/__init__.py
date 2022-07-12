@@ -16,11 +16,11 @@ import socket
 from pathlib import PosixPath
 
 container_bin = 'podman'
-lvmt_root = os.environ["PWD"]
-lvmt_image_source_local = "localhost"
-lvmt_image_source_remote = "ghcr.io/sdss"
-lvmt_image_name = 'lvmpwi'
-lvmt_rmq = socket.gethostname()
+lvm_root = os.environ["PWD"]
+lvm_image_source_local = "localhost"
+lvm_image_source_remote = "ghcr.io/sdss"
+lvm_image_name = 'lvmpwi'
+lvm_rmq = socket.gethostname()
 
 default_pwi = 'lvm.pwi'
 
@@ -53,13 +53,13 @@ def next_free_port( port=5900, max_port=5909 ):
 
 
 @click.command()   
-@click.option("--lvmt_root", default=lvmt_root, type=str)
+@click.option("--lvm_root", default=lvm_root, type=str)
 @click.option("--use-cache/--no-cache", default=True)
-def build(lvmt_root:str, use_cache: bool):
-    pwi_dockerfile = f"{lvmt_root}/container"
-    lvmt_image_fullbuild = "" if use_cache else " --no-cache"
-    print(f"{container_bin} build --tag {lvmt_image_name}{lvmt_image_fullbuild} --rm {pwi_dockerfile}")
-    build = f"{container_bin} build --tag {lvmt_image_name}{lvmt_image_fullbuild} --rm {pwi_dockerfile}"
+def build(lvm_root:str, use_cache: bool):
+    pwi_dockerfile = f"{lvm_root}/container"
+    lvm_image_fullbuild = "" if use_cache else " --no-cache"
+    print(f"{container_bin} build --tag {lvm_image_name}{lvm_image_fullbuild} --rm {pwi_dockerfile}")
+    build = f"{container_bin} build --tag {lvm_image_name}{lvm_image_fullbuild} --rm {pwi_dockerfile}"
     command = subprocess.run(shlex.split(build))
 
 
@@ -67,27 +67,27 @@ def build(lvmt_root:str, use_cache: bool):
 @click.option("--name", "-n", default=default_pwi, type=str)
 @click.option("--debug", "-d", default=False, type=bool)
 def autotuner(name: str, debug:bool):
-    run_autotuner = f"-v {lvmt_root}:/root/lvmt:Z -e PWI_NAME={name}"
+    run_autotuner = f"-v {lvm_root}:/root/lvmt:Z -e PWI_NAME={name}"
     run = f"{container_bin} exec -ti {name} /opt/autotuner-1.0.3beta1/run-autotuner_nogl"
     command = subprocess.run(shlex.split(f"{run}"))
 
 
 @click.command()   
-@click.option("--lvmt_root", default=lvmt_root, type=str)
+@click.option("--lvm_root", default=lvm_root, type=str)
 @click.option("--with-ui/--without-ui", default=True)
-@click.option("--rmq", default=lvmt_rmq, type=str)
+@click.option("--rmq_host", default=lvm_rmq, type=str)
 @click.option("--name", "-n", default=default_pwi, type=str)
 @click.option("--debug/--no-debug", "-d", default=False)
 @click.option("--simulator/--elmo", default=False)
 @click.option("--kill/--no-kill", default=False)
 @click.option("--geom", "-g", default='800x600', type=str)
-def start(name: str, rmq:str, with_ui: bool, lvmt_root:str, debug:bool, simulator:bool, kill:bool, geom:str):
-    if not subprocess.run(shlex.split(f"{container_bin} image exists {lvmt_image_source_local}/{lvmt_image_name}")).returncode:
-       lvmt_image = f"{lvmt_image_source_local}/{lvmt_image_name}"
+def start(name: str, with_ui: bool, lvm_root:str, rmq_host:str, debug:bool, simulator:bool, kill:bool, geom:str):
+    if not subprocess.run(shlex.split(f"{container_bin} image exists {lvm_image_source_local}/{lvm_image_name}")).returncode:
+       lvm_image = f"{lvm_image_source_local}/{lvm_image_name}"
     else:
-       if subprocess.run(shlex.split(f"{container_bin} image exists {lvmt_image_source_remote}/{lvmt_image_name}")).returncode:
-           subprocess.run(shlex.split(f"{container_bin} pull {lvmt_image_source_remote}/{lvmt_image_name}:latest"))
-       lvmt_image = f"{lvmt_image_source_remote}/{lvmt_image_name}"
+       if subprocess.run(shlex.split(f"{container_bin} image exists {lvm_image_source_remote}/{lvm_image_name}")).returncode:
+           subprocess.run(shlex.split(f"{container_bin} pull {lvm_image_source_remote}/{lvm_image_name}:latest"))
+       lvm_image = f"{lvm_image_source_remote}/{lvm_image_name}"
 
     vnc_port=None
 
@@ -97,7 +97,7 @@ def start(name: str, rmq:str, with_ui: bool, lvmt_root:str, debug:bool, simulato
     run_base = f"--rm -d --name {name}"
     system_xauthority = getXauthority()
     
-    run_base += f" -e LVMT_RMQ={rmq}"
+    run_base += f" -e LVM_RMQ_HOST={rmq_host}"
     
     if with_ui and os.environ.get("DISPLAY") and system_xauthority:
         run_base +=  f" -e DISPLAY -v {system_xauthority}:/root/.Xauthority:Z --ipc=host  --network=host"
@@ -109,7 +109,7 @@ def start(name: str, rmq:str, with_ui: bool, lvmt_root:str, debug:bool, simulato
 #        run_base +=  f" -p 3389"
         
     if debug:
-        run_base +=  f" -p 8220 -e PWI_DEBUG=true"
+        run_base +=  f" -p 8220 -e LVM_DEBUG=true"
 
     if simulator:
         run_base +=  f" -e PWI_SIMULATOR=true"
@@ -122,8 +122,8 @@ def start(name: str, rmq:str, with_ui: bool, lvmt_root:str, debug:bool, simulato
     run_base += " -v /dev:/dev:rslave"
     
     system_xauthority=PosixPath('~/.Xauthority').expanduser()
-    run_pwi = f"-v {lvmt_root}:/root/lvmt:Z -e PWI_NAME={name}"
-    run = f"{container_bin} run {run_base} {run_pwi} {lvmt_image}"
+    run_pwi = f"-v {lvm_root}:/root/{os.path.basename(lvm_root)}:Z -e PWI_NAME={name}"
+    run = f"{container_bin} run {run_base} {run_pwi} {lvm_image}"
     print(run)
     #child = pexpect.spawn(run)
     #child.expect('BSC loaded')

@@ -18,6 +18,14 @@ from lvmpwi.actor.actor import lvmpwi as PwiActor
     help="Path to the user configuration file.",
 )
 @click.option(
+    "-r",
+    "--rmq_url",
+    "rmq_url",
+    default=None,
+    type=str,
+    help="rabbitmq url, eg: amqp://guest:guest@localhost:5672/",
+)
+@click.option(
     "-v",
     "--verbose",
     count=True,
@@ -27,7 +35,7 @@ from lvmpwi.actor.actor import lvmpwi as PwiActor
 def lvmpwi(ctx, config_file, verbose):
     """pwi controller"""
 
-    ctx.obj = {"verbose": verbose, "config_file": config_file}
+    ctx.obj = {"verbose": verbose, "config_file": config_file, "rmq_url": rmq_url}
 
 
 @lvmpwi.group(cls=DaemonGroup, prog="pwi_actor", workdir=os.getcwd())
@@ -39,7 +47,11 @@ async def actor(ctx):
     default_config_file = os.path.join(os.path.dirname(__file__), "etc/lvmpwi.yml")
     config_file = ctx.obj["config_file"] or default_config_file
     
-    lvmpwi_obj = PwiActor.from_config(config_file)
+    lvmpwi_obj = PwiActor.from_config(
+        config_file,
+        url=ctx.obj["rmq_url"],
+        verbose=ctx.obj["verbose"]
+    )
 
     if ctx.obj["verbose"]:
         lvmpwi_obj.log.fh.setLevel(0)

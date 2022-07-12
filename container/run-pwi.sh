@@ -1,31 +1,65 @@
 #!/usr/bin/bash
 
-LVMT_PATH=/root/lvmt
-LVMT_CONFIG_PATH=$LVMT_PATH/config/planewave/$PWI_NAME
+PYTHON=/usr/bin/python3
+
+LVM_ROOT=${HOME}
+#LVM_PATH=/root/lvm
+
+LVM_ACTOR="lvmpwi"
+
+#if [ $LVM_DEBUG ]; then 
+  LVM_ACTOR_PATH=$(ls -1 -d ${LVM_ROOT}/lvm/${LVM_ACTOR} ${LVM_ROOT}/${LVM_ACTOR} 2> /dev/null)
+  export PYTHONPATH=$(ls -1 -d ${LVM_ROOT}/lvm/*/python ${LVM_ROOT}/${LVM_ACTOR}/python 2>/dev/null | tr "\n" ":")
+#else
+#  LVM_ACTOR_PATH=$(${PYTHON} -c "import ${LVM_ACTOR} as _; print(_.__path__[0])")
+#fi
+
+
+start_actor() {
+
+    if [ $LVM_RMQ_HOST ]; then
+        echo $LVM_RMQ_HOST
+        LVM_ACTOR_ARGS="--rmq_url amqp://guest:guest@${LVM_RMQ_HOST}:5672/"
+    fi
+
+    LVM_ACTOR_CONFIG_ABS="${LVM_ACTOR_PATH}/python/${LVM_ACTOR}/etc/${LVM_ACTOR_CONFIG:-$PWI_NAME}.yml"
+    echo ${LVM_ACTOR_CONFIG_ABS}
+
+    sed "s/lvm.pwi/$PWI_NAME/" < ${LVM_ACTOR_PATH}/python/${LVM_ACTOR}/etc/lvm.pwi.yml > ${LVM_ACTOR_CONFIG_ABS}
+  
+    while true 
+    do
+       sleep 2
+       ${PYTHON} ${LVM_ACTOR_PATH}/python/${LVM_ACTOR}/__main__.py --config ${LVM_ACTOR_CONFIG} ${LVM_ACTOR_ARGS} start --debug
+    done
+}
 
 setup_pwi4() {
-    mkdir -p $LVMT_CONFIG_PATH/Settings/
+
+    LVM_CONFIG_PATH=${LVM_ACTOR_PATH}/config/planewave/$PWI_NAME
+
+    mkdir -p ${LVM_CONFIG_PATH}/Settings/
     mkdir -p ~/PlaneWave\ Instruments/PWI4/
     rm -rf ~/PlaneWave\ Instruments/PWI4/Settings
-    (cd ~/PlaneWave\ Instruments/PWI4/ && ln -s $LVMT_CONFIG_PATH/Settings/ )
-    if [ ! -f  $LVMT_CONFIG_PATH/Settings/PWI4.cfg ]; then
-        cp $LVMT_CONFIG_PATH/../pwi/Settings/PWI4.cfg $LVMT_CONFIG_PATH/Settings/PWI4.cfg
+    (cd ~/PlaneWave\ Instruments/PWI4/ && ln -s ${LVM_CONFIG_PATH}/Settings/ )
+    if [ ! -f  ${LVM_CONFIG_PATH}/Settings/PWI4.cfg ]; then
+        cp ${LVM_CONFIG_PATH}/../pwi/Settings/PWI4.cfg ${LVM_CONFIG_PATH}/Settings/PWI4.cfg
     fi
     if [ $PWI_SIMULATOR ]; then 
-        sed  -i "s/elmo/simulator/" $LVMT_CONFIG_PATH/Settings/PWI4.cfg
+        sed  -i "s/elmo/simulator/" ${LVM_CONFIG_PATH}/Settings/PWI4.cfg
     else
-        sed  -i "s/simulator/elmo/" $LVMT_CONFIG_PATH/Settings/PWI4.cfg
+        sed  -i "s/simulator/elmo/" ${LVM_CONFIG_PATH}/Settings/PWI4.cfg
     fi
 
-    mkdir -p $LVMT_CONFIG_PATH/Mount\ Tuning/
+    mkdir -p ${LVM_CONFIG_PATH}/Mount\ Tuning/
     rm -rf ~/PlaneWave\ Instruments/Mount\ Tuning
-    (cd ~/PlaneWave\ Instruments/ && ln -s $LVMT_CONFIG_PATH/Mount\ Tuning/ )
-    mkdir -p $LVMT_PATH/data
-    (cd $PWI_PATH && ln -sf $LVMT_PATH/data data )
+    (cd ~/PlaneWave\ Instruments/ && ln -s ${LVM_CONFIG_PATH}/Mount\ Tuning/ )
+    mkdir -p ${LVM_ACTOR_PATH}/data
+    (cd ${PWI_PATH} && ln -sf ${LVM_ACTOR_PATH}/data data )
 }
 
 start_pwi4() {
-    cd $PWI_PATH
+    cd ${PWI_PATH}
     ./run-pwi4
 }
 
@@ -36,7 +70,7 @@ max_pwi4() {
 
 use_xrdp() {
     echo -e "${PASSWD:-lvmt}\n${PASSWD:-lvmt}" | passwd
-    cp $LVMT_PATH/container/xrdp.ini /etc/xrdp/ 
+    cp ${LVM_ACTOR_PATH}/container/xrdp.ini /etc/xrdp/ 
     Xvnc :2 -geometry 800x600 &
     /usr/sbin/xrdp-sesman
     /usr/sbin/xrdp
@@ -46,31 +80,13 @@ use_xrdp() {
 
 use_vnc() {
     echo -e "${PASSWD:-lvmt}\n${PASSWD:-lvmt}" | passwd
-    cp $LVMT_PATH/container/xrdp.ini /etc/xrdp/ 
+    cp ${LVM_ACTOR_PATH}/container/xrdp.ini /etc/xrdp/ 
     Xvnc :0 -geometry $PWI_GEOM &
     export DISPLAY=:0
     fluxbox &
 }
 
 
-start_actor() {
-    # lets give the pwi sw some time to startup
-    if [ ! -f $LVMT_PATH/python/lvmpwi/etc/$PWI_NAME.yml ]; then
-       cat $LVMT_PATH/python/lvmpwi/etc/lvm.pwi.yml | sed "s/lvm.pwi/$PWI_NAME/; s/host: localhost/host: $LVM_RMQ_HOST/" \
-            > $LVMT_PATH/python/lvmpwi/etc/$PWI_NAME.yml
-       sed  -i "s/elmo/simulator/" $LVMT_CONFIG_PATH/Settings/PWI4.cfg
-    fi
-
-    if [ $PWI_DEBUG ]; then 
-        export PYTHONPATH=$LVMT_PATH/python
-    fi
-    
-    while true 
-    do
-       sleep 2
-       python3 $LVMT_PATH/python/lvmpwi/__main__.py -c $LVMT_PATH/python/lvmpwi/etc/$PWI_NAME.yml start --debug
-    done
-}
 
 setup_pwi4
 
