@@ -71,7 +71,7 @@ EXPOSE 3389/tcp
 
 WORKDIR /root
 
-COPY ./container/run-pwi.sh .
+COPY run-pwi.sh .
 
 CMD ["/root/run-pwi.sh"]
 
