@@ -18,19 +18,19 @@ LVM_ACTOR="lvmpwi"
 start_actor() {
 
     if [ $LVM_RMQ_HOST ]; then
-        echo $LVM_RMQ_HOST
+        # echo $LVM_RMQ_HOST
         LVM_ACTOR_ARGS="--rmq_url amqp://guest:guest@${LVM_RMQ_HOST}:5672/"
     fi
 
     LVM_ACTOR_CONFIG_ABS="${LVM_ACTOR_PATH}/python/${LVM_ACTOR}/etc/${LVM_ACTOR_CONFIG:-$PWI_NAME}.yml"
-    echo ${LVM_ACTOR_CONFIG_ABS}
+    # echo ${LVM_ACTOR_CONFIG_ABS}
 
     sed "s/lvm.pwi/$PWI_NAME/" < ${LVM_ACTOR_PATH}/python/${LVM_ACTOR}/etc/lvm.pwi.yml > ${LVM_ACTOR_CONFIG_ABS}
   
     while true 
     do
        sleep 2
-       ${PYTHON} ${LVM_ACTOR_PATH}/python/${LVM_ACTOR}/__main__.py --config ${LVM_ACTOR_CONFIG} ${LVM_ACTOR_ARGS} start --debug
+       ${PYTHON} ${LVM_ACTOR_PATH}/python/${LVM_ACTOR}/__main__.py --config ${LVM_ACTOR_CONFIG_ABS} ${LVM_ACTOR_ARGS} start --debug
     done
 }
 
@@ -101,3 +101,6 @@ start_actor &
 start_pwi4
 
 
+if [ ${LVM_DEBUG} ]; then 
+   sleep INFINITY
+fi

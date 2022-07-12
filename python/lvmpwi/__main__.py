@@ -32,7 +32,7 @@ from lvmpwi.actor.actor import lvmpwi as PwiActor
     help="Debug mode. Use additional v for more details.",
 )
 @click.pass_context
-def lvmpwi(ctx, config_file, verbose):
+def lvmpwi(ctx, config_file, verbose, rmq_url):
     """pwi controller"""
 
     ctx.obj = {"verbose": verbose, "config_file": config_file, "rmq_url": rmq_url}
