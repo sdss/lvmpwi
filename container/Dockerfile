@@ -67,7 +67,8 @@ RUN mkdir -p $PWI_AUTOTUNER_PATH && \
     chmod 755 $PWI_AUTOTUNER_PATH/run-autotuner_nogl
 
         
-EXPOSE 3389/tcp
+#EXPOSE 3389/tcp
+EXPOSE 5900/tcp
 
 WORKDIR /root
 

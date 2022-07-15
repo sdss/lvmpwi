@@ -58,8 +58,8 @@ def next_free_port( port=5900, max_port=5909 ):
 def build(lvm_root:str, use_cache: bool):
     pwi_dockerfile = f"{lvm_root}/container"
     lvm_image_fullbuild = "" if use_cache else " --no-cache"
-    print(f"{container_bin} build --tag {lvm_image_name}{lvm_image_fullbuild} --rm --file {pwi_dockerfile}/Dockerfile .")
     build = f"{container_bin} build --tag {lvm_image_name}{lvm_image_fullbuild} --rm --file {pwi_dockerfile}/Dockerfile ."
+    print(build)
     command = subprocess.run(shlex.split(build))
 
 
