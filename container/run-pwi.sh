@@ -68,19 +68,9 @@ max_pwi4() {
     wmctrl -r ':ACTIVE:' -b toggle,fullscreen
 }
 
-use_xrdp() {
-    echo -e "${PASSWD:-lvmt}\n${PASSWD:-lvmt}" | passwd
-    cp ${LVM_ACTOR_PATH}/container/xrdp.ini /etc/xrdp/ 
-    Xvnc :2 -geometry 800x600 &
-    /usr/sbin/xrdp-sesman
-    /usr/sbin/xrdp
-    export DISPLAY=:2 
-    fluxbox &
-}
-
 use_vnc() {
-    echo -e "${PASSWD:-lvmt}\n${PASSWD:-lvmt}" | passwd
-    cp ${LVM_ACTOR_PATH}/container/xrdp.ini /etc/xrdp/ 
+#    echo -e "${PASSWD:-lvmt}\n${PASSWD:-lvmt}" | passwd
+#    cp ${LVM_ACTOR_PATH}/container/xrdp.ini /etc/xrdp/ 
     Xvnc :0 -geometry $PWI_GEOM &
     export DISPLAY=:0
     fluxbox &
@@ -89,7 +79,6 @@ use_vnc() {
 setup_pwi4
 
 if [ -z $DISPLAY ]; then
-#    use_xrdp
     use_vnc
     max_pwi4 &
 fi
