@@ -141,6 +141,7 @@ def checkIfMountCanMove(status):
 
 
 async def waitUntilEndOfSlew(command: Command, pwi: PWI4):
+    await asyncio.sleep(0.05)
     while(True):
         status = pwi.status()
         
