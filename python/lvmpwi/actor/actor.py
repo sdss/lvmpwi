@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import asyncio
+
 from contextlib import suppress
 
 from clu.actor import AMQPActor
@@ -96,6 +97,8 @@ class lvmpwi(AMQPActor):
             status = pwi.status()
             self.log.debug(f"is_connected {status.mount.is_connected}")
 
+            self.statusTask = None
+            self.statusLock = asyncio.Lock()
 
         except Exception as ex:
             self.log.error(f"Unexpected exception {type(ex)}: {ex}")
