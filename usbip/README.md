@@ -27,6 +27,9 @@
 - OpenSuse
     zypper install -y usbip
 
+- Centos
+    yum install kmod-usbip
+
 Temporary load the kernel module.
 
     sudo modprobe vhci-hcd
@@ -73,9 +76,9 @@ Add it to /etc/modules or in a file inside /etc/modprobe.d
  After installing systemd scripts /etc/systemd/system/*.service, the systemd daemon has to be restarted.
  
     sudo systemctl daemon-reload
-    sudo systemctrl start usbip_planewave
-    sudo systemctrl enable usbip_planewave
-    sudo systemctrl status usbip_planewave
+    sudo systemctl start usbip_planewave
+    sudo systemctl enable usbip_planewave
+    sudo systemctl status usbip_planewave
 
 # TODO
 * Currently this only works for one mount.
