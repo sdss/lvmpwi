@@ -88,17 +88,16 @@ class lvmpwi(AMQPActor):
 
         assert len(self.parser_args) == 1
        
-        try:
-            self.log.debug(f"Start pwi ...")
+        self.log.debug(f"Start pwi ...")
 
-            pwi = self.parser_args[0]
-            self.log.debug(f"{type(self.parser_args)}")
-            
-            status = pwi.status()
-            self.log.debug(f"is_connected {status.mount.is_connected}")
+        pwi = self.parser_args[0]
+        self.log.debug(f"{type(self.parser_args)}")
 
-            self.statusTask = None
-            self.statusLock = asyncio.Lock()
+        self.statusTask = None
+        self.statusLock = asyncio.Lock()
+
+        status = pwi.status()
+        self.log.debug(f"is_connected {status.mount.is_connected}")
 
         self.log.debug("Start done")
 
