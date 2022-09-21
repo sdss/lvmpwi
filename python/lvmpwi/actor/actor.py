@@ -100,9 +100,6 @@ class lvmpwi(AMQPActor):
             self.statusTask = None
             self.statusLock = asyncio.Lock()
 
-        except Exception as ex:
-            self.log.error(f"Unexpected exception {type(ex)}: {ex}")
-
         self.log.debug("Start done")
 
     async def stop(self):
