@@ -58,7 +58,12 @@ setup_pwi4() {
 
 start_pwi4() {
     cd ${PWI_PATH}
-    ./run-pwi4
+    while true 
+    do
+       ./run-pwi4
+       sleep 2
+    done
+
 }
 
 max_pwi4() {
@@ -83,9 +88,6 @@ fi
 
 start_actor & 
 
-start_pwi4
+start_pwi4 & 
 
-
-if [ ${LVM_DEBUG} ]; then 
-   sleep INFINITY
-fi
+trap : TERM INT; sleep infinity & wait
