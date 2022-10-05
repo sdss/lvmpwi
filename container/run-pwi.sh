@@ -77,13 +77,14 @@ use_vnc() {
     Xvnc :0 -geometry $PWI_GEOM &
     export DISPLAY=:0
     fluxbox &
+    (cd /usr/share/novnc/ && ~/novnc_server &)
 }
 
 setup_pwi4
 
 if [ -z $DISPLAY ]; then
     use_vnc
-    max_pwi4 &
+#    max_pwi4 &
 fi
 
 start_actor & 

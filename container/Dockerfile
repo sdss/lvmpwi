@@ -30,6 +30,7 @@ RUN apt-get update \
         wmctrl \
         xfonts-base xfonts-75dpi xfonts-100dpi \
         tightvncserver \
+        novnc \
         eterm \
         fluxbox \
         xrdp \
