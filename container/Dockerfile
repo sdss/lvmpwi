@@ -75,6 +75,7 @@ EXPOSE 5900/tcp
 WORKDIR /root
 
 COPY ./container/run-pwi.sh .
+COPY ./container/novnc_server .
 
 CMD ["/root/run-pwi.sh"]
 
