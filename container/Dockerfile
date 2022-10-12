@@ -10,6 +10,7 @@ MAINTAINER Florian Briegel, briegel@mpia.de
 
 # podman run --rm -ti --name pwi -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z -e PWI_NAME=pwi -p 3389 localhost/ubuntu_lvmt_pwi
 
+# podman run --rm -ti --name lvm-sci-pwi -v ~lvm/workspace/lvm:/root/lvm:Z -e PWI_NAME=lvm.sci.pwi -e PWI_GEOM=1200x900 -e LVM_ACTOR_ARGS="--verbose --rmq_url=amqp://guest:guest@192.168.1.1:5672/" -p 8091:6080 ghcr.io/sdss/lvmpwi:latest
 
 RUN apt-get update && \
     DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends software-properties-common && \
