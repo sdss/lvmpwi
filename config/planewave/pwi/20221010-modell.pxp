@@ -1,0 +1,145 @@
+Number of Cal Stars:
+5
+
+Cal Star 1:
+
+RA, Dec:
+4.33274496149088
+0.880373648340487
+ThetaEnc, PhiEnc:
+0.492475598462571
+1.7376980956585
+LST, JD:
+4.34267832952279
+2459863.11369464
+Time, Date:
+14:43:43
+2022-10-10
+
+Cal Star 2:
+
+RA, Dec:
+2.76792638738407
+0.00921679289157339
+ThetaEnc, PhiEnc:
+0.492475265666739
+0.16233115090763
+LST, JD:
+4.34524777946245
+2459863.11410247
+Time, Date:
+14:44:18
+2022-10-10
+
+Cal Star 3:
+
+RA, Dec:
+5.91927906759512
+0.00213802833369305
+ThetaEnc, PhiEnc:
+0.528349657963246
+3.32682248730627
+LST, JD:
+4.34947501901867
+2459863.11477341
+Time, Date:
+14:45:16
+2022-10-10
+
+Cal Star 4:
+
+RA, Dec:
+4.34480227774008
+0.0874860831972591
+ThetaEnc, PhiEnc:
+1.29499477623042
+1.75229418805191
+LST, JD:
+4.35317540320489
+2459863.11536074
+Time, Date:
+14:46:07
+2022-10-10
+
+Cal Star 5:
+
+RA, Dec:
+1.24797877390498
+1.49436787403638
+ThetaEnc, PhiEnc:
+-0.268445431495096
+1.75229418805191
+LST, JD:
+4.35610107300366
+2459863.1158251
+Time, Date:
+14:46:47
+2022-10-10
+
+Latitude, Longitude, TimeZone, DST:
+49.3965
+8.69997222222222
+
+
+
+CW Azimuth, MaxAzCounts:
+True
+6.283185308
+
+Altitude Up, MaxAltCounts:
+True
+6.283185308
+
+IsAltAz, IsGEM:
+False
+False
+
+Temperature, Pressure:
+16
+1018
+
+Terms Enabled:
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+0
+
+Cal Points Used:
+1
+1
+1
+1
+1
+
+Scale Factors, Theta, Phi:
+1
+1
+
+Clock Rate Error:
+0.0
+
+Terms Enabled:
+0
+0
+0
+0
+0
+0
+0
+
+Enable Refraction:
+1
+
+Max Sensitivity:
+300
