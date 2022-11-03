@@ -36,10 +36,16 @@ setup_pwi4() {
 
     LVM_CONFIG_PATH=${LVM_ACTOR_PATH}/config/planewave/$PWI_NAME
 
-    mkdir -p ${LVM_CONFIG_PATH}/Settings/
     mkdir -p ~/PlaneWave\ Instruments/PWI4/
+
+    rm -rf ~/PlaneWave\ Instruments/PWI4/Mount
+    mkdir -p ${LVM_CONFIG_PATH}/Mount/
+    (cd ~/PlaneWave\ Instruments/PWI4/ && ln -s ${LVM_CONFIG_PATH}/Mount/ )
+
     rm -rf ~/PlaneWave\ Instruments/PWI4/Settings
+    mkdir -p ${LVM_CONFIG_PATH}/Settings/
     (cd ~/PlaneWave\ Instruments/PWI4/ && ln -s ${LVM_CONFIG_PATH}/Settings/ )
+
     if [ ! -f  ${LVM_CONFIG_PATH}/Settings/PWI4.cfg ]; then
         cp ${LVM_CONFIG_PATH}/../pwi/Settings/PWI4.cfg ${LVM_CONFIG_PATH}/Settings/PWI4.cfg
     fi

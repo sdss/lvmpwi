@@ -71,7 +71,7 @@ class lvmpwi(AMQPActor):
                         },
                        "model": {
                            "filename" : {"type": "string"},
-                           "num_points_enabled" : {"type": "boolean"},
+                           "num_points_enabled" : {"type": "number"},
                            "position_degs" : {"type": "number"},
                            "num_points_total" : {"type": "number"},
                            "rms_error_arcsec" : {"type": "number"},
