@@ -67,7 +67,6 @@ async def modelAddPoint(command: Command, pwi: PWI4, ra_j2000_hours, dec_j2000_d
 @parser.command("modelDeletePoint")
 @click.argument("POINTS", nargs=-1, type=int)
 async def modelDeletePoint(command: Command, pwi: PWI4, points):
-#async def mount_model_delete_point(self, *point_indexes_0_based):
     """
     Remove one or more calibration points from the pointing model.
 
@@ -76,9 +75,9 @@ async def modelDeletePoint(command: Command, pwi: PWI4, points):
     Added in PWI 4.0.11 beta 9
 
     Examples:
-        mount_model_delete_point(0)  # Delete the first point
-        mount_model_delete_point(1, 3, 5)  # Delete the second, fourth, and sixth points
-        mount_model_delete_point(*range(20)) # Delete the first 20 points
+        modelDeletePoint(0)  # Delete the first point
+        modelDeletePoint(1, 3, 5)  # Delete the second, fourth, and sixth points
+        modelDeletePoint(*range(20)) # Delete the first 20 points
     """
 
     try:
@@ -102,13 +101,10 @@ async def modelEnablePoint(command: Command, pwi: PWI4, points):
     Added in PWI 4.0.11 beta 9
 
     Examples:
-        mount_model_enable_point(0)  # Enable the first point
-        mount_model_enable_point(1, 3, 5)  # Enable the second, fourth, and sixth points
-        mount_model_enable_point(*range(20)) # Enable the first 20 points
+        modelEnablePoint(0)  # Enable the first point
+        modelEnablePoint(1, 3, 5)  # Enable the second, fourth, and sixth points
+        modelEnablePoint(*range(20)) # Enable the first 20 points
     """
-
-    point_indexes_comma_separated = list_to_comma_separated_string(point_indexes_0_based)
-    return self.request_with_status("/mount/model/enable_point", index=point_indexes_comma_separated)
 
     try:
         status = pwi.mount_model_enable_point(*points)
@@ -145,7 +141,9 @@ async def modelDisablePoint(command: Command, pwi: PWI4, points):
     """
 
     try:
-        status = pwi.mount_model_disable_point(*points)
+        command.info(text=f"{points}")
+
+        status = pwi.mount_model_disable_point(points)
 
         return command.finish(model = _model_status(status) )
 

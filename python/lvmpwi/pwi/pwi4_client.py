@@ -1,3 +1,10 @@
+"""
+This Python module wraps the calls and status responses provided
+by the HTTP API exposed by PWI4. This code can be called directly
+from other Python scripts, or can be adapted to other languages
+as needed.
+"""
+
 try:
     # Python 3.x version
     from urllib.parse import urlencode
@@ -38,6 +45,10 @@ class PWI4:
     def mount_set_slew_time_constant(self, value):
         return self.request_with_status("/mount/set_slew_time_constant", value=value)
 
+    def mount_set_axis0_wrap_range_min(self, axis0_wrap_min_degs):
+        # Added in PWI 4.0.13
+        return self.request_with_status("/mount/set_axis0_wrap_range_min", degs=axis0_wrap_min_degs)
+
     def mount_find_home(self):
         return self.request_with_status("/mount/find_home")
 
@@ -53,6 +64,15 @@ class PWI4:
     def mount_goto_alt_az(self, alt_degs, az_degs):
         return self.request_with_status("/mount/goto_alt_az", alt_degs=alt_degs, az_degs=az_degs)
 
+    def mount_goto_coord_pair(self, coord0, coord1, coord_type):
+        """
+        Set the mount target to a pair of coordinates in a specified coordinate system.
+        coord_type: can currently be "altaz" or "raw"
+        coord0: the azimuth coordinate for the "altaz" type, or the axis0 coordiate for the "raw" type
+        coord1: the altitude coordinate for the "altaz" type, or the axis1 coordinate for the "raw" type
+        """
+        return self.request_with_status("/mount/goto_coord_pair", c0=coord0, c1=coord1, type=coord_type)
+
     def mount_offset(self, **kwargs):
         """
         One or more of the following offsets can be specified as a keyword argument:
@@ -61,6 +81,14 @@ class PWI4:
         AXIS_stop_rate: Set any active offset rate to zero. Set this to any value to issue the command.
         AXIS_add_arcsec: Increase the current position offset by the specified amount
         AXIS_set_rate_arcsec_per_sec: Continually increase the offset at the specified rate
+
+        As of PWI 4.0.11 Beta 7, the following options are also supported:
+        AXIS_stop: Stop both the offset rate and any gradually-applied commands
+        AXIS_stop_gradual_offset: Stop only the gradually-applied offset, and maintain the current rate
+        AXIS_set_total_arcsec: Set the total accumulated offset at the time the command is received to the specified value. Any in-progress rates or gradual offsets will continue to be applied on top of this.
+        AXIS_add_gradual_offset_arcsec: Gradually add the specified value to the total accumulated offset. Must be paired with AXIS_gradual_offset_rate or AXIS_gradual_offset_seconds to determine the timeframe over which the gradual offset is applied.
+        AXIS_gradual_offset_rate: Paired with AXIS_add_gradual_offset_arcsec; Specifies the rate at which a gradual offset should be applied. For example, if an offset of 10 arcseconds is to be applied at a rate of 2 arcsec/sec, then it will take 5 seconds for the offset to be applied.
+        AXIS_gradual_offset_seconds: Paired with AXIS_add_gradual_offset_arcsec; Specifies the time it should take to apply the gradual offset. For example, if an offset of 10 arcseconds is to be applied over a period of 2 seconds, then the offset will be increasing at a rate of 5 arcsec/sec.
 
         Where AXIS can be one of:
 
@@ -82,6 +110,18 @@ class PWI4:
         """
 
         return self.request_with_status("/mount/offset", **kwargs)
+
+    def mount_spiral_offset_new(self, x_step_arcsec, y_step_arcsec):
+        # Added in PWI 4.0.11 Beta 8
+        return self.request_with_status("/mount/spiral_offset/new", x_step_arcsec=x_step_arcsec, y_step_arcsec=y_step_arcsec)
+
+    def mount_spiral_offset_next(self):
+        # Added in PWI 4.0.11 Beta 8
+        return self.request_with_status("/mount/spiral_offset/next")
+
+    def mount_spiral_offset_previous(self):
+        # Added in PWI 4.0.11 Beta 8
+        return self.request_with_status("/mount/spiral_offset/previous")
 
     def mount_park(self):
         return self.request_with_status("/mount/park")
@@ -126,18 +166,114 @@ class PWI4:
         return self.request_with_status("/mount/custom_path/apply")
 
     def mount_model_add_point(self, ra_j2000_hours, dec_j2000_degs):
+        """
+        Add a calibration point to the pointing model, mapping the current pointing direction
+        of the telescope to the secified J2000 Right Ascension and Declination values.
+
+        This call might be performed after manually centering a bright star with a known
+        RA and Dec, or the RA and Dec might be provided by a PlateSolve solution
+        from an image taken at the current location.
+        """
+
         return self.request_with_status("/mount/model/add_point", ra_j2000_hours=ra_j2000_hours, dec_j2000_degs=dec_j2000_degs)
 
+    def mount_model_delete_point(self, *point_indexes_0_based):
+        """
+        Remove one or more calibration points from the pointing model.
+
+        Points are specified by index, ranging from 0 to (number_of_points-1).
+
+        Added in PWI 4.0.11 beta 9
+
+        Examples:  
+          mount_model_delete_point(0)  # Delete the first point
+          mount_model_delete_point(1, 3, 5)  # Delete the second, fourth, and sixth points
+          mount_model_delete_point(*range(20)) # Delete the first 20 points
+        """
+
+        point_indexes_comma_separated = list_to_comma_separated_string(point_indexes_0_based)
+        return self.request_with_status("/mount/model/delete_point", index=point_indexes_comma_separated)
+
+    def mount_model_enable_point(self, *point_indexes_0_based):
+        """
+        Flag one or more calibration points as "enabled", meaning that these points
+        will contribute to the fit of the model.
+
+        Points are specified by index, ranging from 0 to (number_of_points-1).
+        
+        Added in PWI 4.0.11 beta 9
+
+        Examples:  
+          mount_model_enable_point(0)  # Enable the first point
+          mount_model_enable_point(1, 3, 5)  # Enable the second, fourth, and sixth points
+          mount_model_enable_point(*range(20)) # Enable the first 20 points
+        """
+
+        point_indexes_comma_separated = list_to_comma_separated_string(point_indexes_0_based)
+        return self.request_with_status("/mount/model/enable_point", index=point_indexes_comma_separated)
+
+    def mount_model_disable_point(self, *point_indexes_0_based):
+        """
+        Flag one or more calibration points as "disabled", meaning that these calibration
+        points will still be stored but will not contribute to the fit of the model.
+        
+        If a point is suspected to be an outlier, it can be disabled. This will cause the model
+        to re-fit, and the point's deviation from the newly-fit model can be re-examined before
+        being deleted entirely.
+
+        Points are specified by index, ranging from 0 to (number_of_points-1).
+        
+        Added in PWI 4.0.11 beta 9
+
+        Examples:  
+          mount_model_disable_point(0)  # Disable the first point
+          mount_model_disable_point(1, 3, 5)  # Disable the second, fourth, and sixth points
+          mount_model_disable_point(*range(20)) # Disable the first 20 points
+          mount_model_disable_point(            # Disable all points
+              *range(
+                  pwi4.status().mount.model.num_points_total
+               ))
+        """
+
+        point_indexes_comma_separated = list_to_comma_separated_string(point_indexes_0_based)
+        return self.request_with_status("/mount/model/disable_point", index=point_indexes_comma_separated)
+
     def mount_model_clear_points(self):
+        """
+        Remove all calibration points from the pointing model.
+        """
+
         return self.request_with_status("/mount/model/clear_points")
 
     def mount_model_save_as_default(self):
+        """
+        Save the active pointing model as the model that will be loaded
+        by default the next time the mount is connected.
+        """
+
         return self.request_with_status("/mount/model/save_as_default")
 
     def mount_model_save(self, filename):
+        """
+        Save the active pointing model to a file so that it can later be re-loaded
+        by a call to mount_model_load().
+
+        This may be useful when switching between models built for different instruments.
+        For example, a system might have one model for the main telescope, and another
+        model for a co-mounted telescope.
+        """
+
         return self.request_with_status("/mount/model/save", filename=filename)
 
     def mount_model_load(self, filename):
+        """
+        Load a model from the specified file and make it the active model.
+
+        This may be useful when switching between models built for different instruments.
+        For example, a system might have one model for the main telescope, and another
+        model for a co-mounted telescope.
+        """
+
         return self.request_with_status("/mount/model/load", filename=filename)
 
     def focuser_enable(self):
@@ -318,28 +454,74 @@ class PWI4Status:
         self.mount.field_angle_rate_at_target_degs_per_sec = self.get_float("mount.field_angle_rate_at_target_degs_per_sec")
         self.mount.path_angle_at_target_degs = self.get_float("mount.path_angle_at_target_degs")
         self.mount.path_angle_rate_at_target_degs_per_sec = self.get_float("mount.path_angle_rate_at_target_degs_per_sec")
+        self.mount.distance_to_sun_degs = self.get_float("mount.distance_to_sun_degs")      # Added in 4.0.13
+        self.mount.axis0_wrap_range_min_degs = self.get_float("mount.axis0_wrap_range_min_degs") # Added in 4.0.13
+
 
         self.mount.axis0 = Section()
-        self.mount.axis0.is_enabled = self.get_bool("mount.axis0.is_enabled")
-        self.mount.axis0.rms_error_arcsec = self.get_float("mount.axis0.rms_error_arcsec")
-        self.mount.axis0.dist_to_target_arcsec = self.get_float("mount.axis0.dist_to_target_arcsec")
-        self.mount.axis0.servo_error_arcsec = self.get_float("mount.axis0.servo_error_arcsec")
-        self.mount.axis0.position_degs = self.get_float("mount.axis0.position_degs")
-        self.mount.axis0.position_timestamp_str = self.get_string("mount.axis0.position_timestamp") # Added in 4.0.9 beta 2
-        
         self.mount.axis1 = Section()
-        self.mount.axis1.is_enabled = self.get_bool("mount.axis1.is_enabled")
-        self.mount.axis1.rms_error_arcsec = self.get_float("mount.axis1.rms_error_arcsec")
-        self.mount.axis1.dist_to_target_arcsec = self.get_float("mount.axis1.dist_to_target_arcsec")
-        self.mount.axis1.servo_error_arcsec = self.get_float("mount.axis1.servo_error_arcsec")
-        self.mount.axis1.position_degs = self.get_float("mount.axis1.position_degs")
-        self.mount.axis1.position_timestamp_str = self.get_string("mount.axis1.position_timestamp") # Added in 4.0.9 beta 2
+        self.mount.axis = [self.mount.axis0, self.mount.axis1]
 
+        for axis_index in range(2):
+            axis = self.mount.axis[axis_index]
+            prefix = "mount.axis%d." % axis_index
+
+            axis.is_enabled = self.get_bool(prefix + "is_enabled")
+            axis.rms_error_arcsec = self.get_float(prefix + "rms_error_arcsec")
+            axis.dist_to_target_arcsec = self.get_float(prefix + "dist_to_target_arcsec")
+            axis.servo_error_arcsec = self.get_float(prefix + "servo_error_arcsec")
+            axis.min_mech_position_degs = self.get_float(prefix + "min_mech_position_degs") # Added in 4.0.13
+            axis.max_mech_position_degs = self.get_float(prefix + "max_mech_position_degs") # Added in 4.0.13
+            axis.target_mech_position_degs = self.get_float(prefix + "target_mech_position_degs") # Added in 4.0.13
+            axis.position_degs = self.get_float(prefix + "position_degs")
+            axis.position_timestamp_str = self.get_string(prefix + "position_timestamp") # Added in 4.0.9 beta 2
+            axis.max_velocity_degs_per_sec = self.get_float(prefix + "max_velocity_degs_per_sec") # Added in 4.0.13
+            axis.setpoint_velocity_degs_per_sec = self.get_float(prefix + "setpoint_velocity_degs_per_sec") # Added in 4.0.13
+            axis.measured_velocity_degs_per_sec = self.get_float(prefix + "measured_velocity_degs_per_sec") # Added in 4.0.13
+            axis.acceleration_degs_per_sec_sqr = self.get_float(prefix + "acceleration_degs_per_sec_sqr") # Added in 4.0.13
+            axis.measured_current_amps = self.get_float(prefix + "measured_current_amps") # Added in 4.0.13
+        
         self.mount.model = Section()
         self.mount.model.filename = self.get_string("mount.model.filename")
         self.mount.model.num_points_total = self.get_int("mount.model.num_points_total")
         self.mount.model.num_points_enabled = self.get_int("mount.model.num_points_enabled")
         self.mount.model.rms_error_arcsec = self.get_float("mount.model.rms_error_arcsec")
+
+        # mount.offests.* was added in PWI 4.0.11 Beta 5
+        if "mount.offsets.ra_arcsec.total" not in self.raw:
+            self.mount.offsets = None  # Offset reporting not supported by running version of PWI4
+        else:
+            self.mount.offsets = Section()
+
+            self.mount.offsets.ra_arcsec = Section()
+            self.mount.offsets.ra_arcsec.total=self.get_float("mount.offsets.ra_arcsec.total")
+            self.mount.offsets.ra_arcsec.rate=self.get_float("mount.offsets.ra_arcsec.rate")
+            self.mount.offsets.ra_arcsec.gradual_offset_progress=self.get_float("mount.offsets.ra_arcsec.gradual_offset_progress")
+
+            self.mount.offsets.dec_arcsec = Section()
+            self.mount.offsets.dec_arcsec.total=self.get_float("mount.offsets.dec_arcsec.total")
+            self.mount.offsets.dec_arcsec.rate=self.get_float("mount.offsets.dec_arcsec.rate")
+            self.mount.offsets.dec_arcsec.gradual_offset_progress=self.get_float("mount.offsets.dec_arcsec.gradual_offset_progress")
+
+            self.mount.offsets.axis0_arcsec = Section()
+            self.mount.offsets.axis0_arcsec.total=self.get_float("mount.offsets.axis0_arcsec.total")
+            self.mount.offsets.axis0_arcsec.rate=self.get_float("mount.offsets.axis0_arcsec.rate")
+            self.mount.offsets.axis0_arcsec.gradual_offset_progress=self.get_float("mount.offsets.axis0_arcsec.gradual_offset_progress")
+
+            self.mount.offsets.axis1_arcsec = Section()
+            self.mount.offsets.axis1_arcsec.total=self.get_float("mount.offsets.axis1_arcsec.total")
+            self.mount.offsets.axis1_arcsec.rate=self.get_float("mount.offsets.axis1_arcsec.rate")
+            self.mount.offsets.axis1_arcsec.gradual_offset_progress=self.get_float("mount.offsets.axis1_arcsec.gradual_offset_progress")
+
+            self.mount.offsets.path_arcsec = Section()
+            self.mount.offsets.path_arcsec.total=self.get_float("mount.offsets.path_arcsec.total")
+            self.mount.offsets.path_arcsec.rate=self.get_float("mount.offsets.path_arcsec.rate")
+            self.mount.offsets.path_arcsec.gradual_offset_progress=self.get_float("mount.offsets.path_arcsec.gradual_offset_progress")
+            
+            self.mount.offsets.transverse_arcsec = Section()
+            self.mount.offsets.transverse_arcsec.total=self.get_float("mount.offsets.transverse_arcsec.total")
+            self.mount.offsets.transverse_arcsec.rate=self.get_float("mount.offsets.transverse_arcsec.rate")
+            self.mount.offsets.transverse_arcsec.gradual_offset_progress=self.get_float("mount.offsets.transverse_arcsec.gradual_offset_progress")
 
         self.focuser = Section()
         self.focuser.is_connected = self.get_bool("focuser.is_enabled")
@@ -491,3 +673,11 @@ class PWI4HttpCommunicator:
 
         payload = response.read()
         return payload
+
+    
+def list_to_comma_separated_string(value_list):
+    """
+    Convert list of values (e.g. [3, 1, 5]) into a comma-separated string (e.g. "3,1,5")
+    """
+
+    return ",".join([str(x) for x in value_list])
