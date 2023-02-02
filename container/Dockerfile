@@ -39,13 +39,7 @@ RUN apt-get update \
         mono-devel \
         mono-basic-dbg
         
-
-RUN apt install -y python3-setuptools python3-pip python3-toml git && \
-    cd /root && \
-    (git clone https://github.com/sdss/lvmpwi.git && \
-    cd lvmpwi && \
-    python3 setup.py install ) && \
-    rm -rf lvmpwi
+RUN apt-get install -y sdss-lvmpwi
 
 #ENV PWI_VERSION=4.0.9beta21
 ENV PWI_VERSION=4.0.11beta50
