@@ -38,8 +38,10 @@ RUN apt-get update \
         libgtk2.0 \
         mono-devel \
         mono-basic-dbg
-        
-RUN apt-get install -y sdss-lvmpwi
+
+RUN apt install -y python3-pip
+
+RUN pip3 install sdss-lvmpwi
 
 #ENV PWI_VERSION=4.0.9beta21
 ENV PWI_VERSION=4.0.11beta50
