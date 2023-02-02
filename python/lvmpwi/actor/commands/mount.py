@@ -60,7 +60,7 @@ async def statusTick(command, pwi: PWI4, delta_time):
 
 @parser.command("setConnected")
 @click.argument("enable", type=bool)
-@click.option("--statusTick", type=float, default=-1)
+@click.option("--statusTick", type=float, default=1)
 async def setConnected(command: Command, pwi: PWI4, enable:bool, statustick:float):
     """set mount connected true/false """
 
