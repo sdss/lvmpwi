@@ -1,5 +1,5 @@
 [Unit]
-Description=Podman container-lvm-sci-pwi.service
+Description=Podman container-lvm-skye-pwi.service
 Documentation=man:podman-generate-systemd(1)
 Wants=network.target
 After=network-online.target
@@ -8,9 +8,9 @@ After=network-online.target
 Environment=PODMAN_SYSTEMD_UNIT=%n
 Restart=on-failure
 ExecStartPre=/usr/bin/rm -f /%t/%n-pid /%t/%n-cid
-ExecStartPre=/usr/bin/podman rm -i lvm-sci-pwi
-ExecStart=/usr/bin/podman run --conmon-pidfile %t/%n-pid  --cidfile %t/%n-cid --rm -d --name lvm-sci-pwi -v /dev:/dev:rslave -v /home/lvm/workspace/lvm:/root/lvm:Z -e PWI_NAME=lvm.sci.pwi -e PWI_GEOM=1200x900 -e LVM_ACTOR_ARGS=--rmq_url=amqp://guest:guest@192.168.49.2:5672/ -p 8091:6080 ghcr.io/sdss/lvmpwi:latest
-ExecStop=/usr/bin/podman kill lvm-sci-pwi
+ExecStartPre=/usr/bin/podman rm -i lvm-skye-pwi
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/%n-pid  --cidfile %t/%n-cid --rm -d --name lvm-skye-pwi -v /dev:/dev:rslave -v /home/lvm/workspace/lvm:/root/lvm:Z -e PWI_NAME=lvm.skye.pwi -e PWI_GEOM=1200x900 -e LVM_ACTOR_ARGS=--rmq_url=amqp://guest:guest@192.168.49.2:5672/ -p 8091:6080 ghcr.io/sdss/lvmpwi:latest
+ExecStop=/usr/bin/podman kill lvm-skye-pwi
 PIDFile=%t/%n-pid
 KillMode=none
 Type=forking
