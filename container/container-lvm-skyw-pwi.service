@@ -9,7 +9,7 @@ Environment=PODMAN_SYSTEMD_UNIT=%n
 Restart=on-failure
 ExecStartPre=/usr/bin/rm -f /%t/%n-pid /%t/%n-cid
 ExecStartPre=/usr/bin/podman rm -i lvm-skyw-pwi
-ExecStart=/usr/bin/podman run --conmon-pidfile %t/%n-pid  --cidfile %t/%n-cid --rm -d --name lvm-skyw-pwi -v /dev:/dev:rslave -v /home/lvm/workspace/lvm:/root/lvm:Z -e PWI_NAME=lvm.skyw.pwi -e PWI_GEOM=1200x900 -e LVM_ACTOR_ARGS=--rmq_url=amqp://guest:guest@192.168.49.2:5672/ -p 8091:6080 ghcr.io/sdss/lvmpwi:latest
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/%n-pid  --cidfile %t/%n-cid --rm -d --name lvm-skyw-pwi -v /dev:/dev:rslave -v /home/lvm/workspace/lvm:/root/lvm:Z -e PWI_NAME=lvm.skyw.pwi -e PWI_GEOM=1200x900 -e LVM_ACTOR_ARGS=--rmq_url=amqp://guest:guest@10.8.38.21:5672/ -p 5900:5900 -p 8091:6080 ghcr.io/sdss/lvmpwi:latest
 ExecStop=/usr/bin/podman kill lvm-skyw-pwi
 PIDFile=%t/%n-pid
 KillMode=none
