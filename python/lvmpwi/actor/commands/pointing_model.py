@@ -143,7 +143,7 @@ async def modelDisablePoint(command: Command, pwi: PWI4, points):
     try:
         command.info(text=f"{points}")
 
-        status = pwi.mount_model_disable_point(points)
+        status = pwi.mount_model_disable_point(*points)
 
         return command.finish(model = _model_status(status) )
 
