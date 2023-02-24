@@ -57,7 +57,6 @@ async def statusTick(actor, pwi: PWI4, delta_time):
 
         await asyncio.sleep(delta_time)
 
-
 @parser.command("setConnected")
 @click.argument("enable", type=bool)
 #@click.option("--statusTick", type=float, default=1)
