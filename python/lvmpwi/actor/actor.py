@@ -17,6 +17,7 @@ from lvmpwi import __version__
 from lvmpwi.actor.commands import parser as pwi_command_parser
 from lvmpwi.pwi import PWI4
 
+from .commands.mount import statusTick
 
 __all__ = ["lvmpwi"]
 
@@ -61,6 +62,14 @@ class lvmpwi(AMQPActor):
                            "position_degs" : {"type": "number"},
                            "rms_error_arcsec" : {"type": "number"},
                            "servo_error_arcsec" : {"type": "number"},
+                           "min_mech_position_degs" : {"type": "number"},
+                           "max_mech_position_degs" : {"type": "number"},
+                           "target_mech_position_degs" : {"type": "number"},
+                           "max_velocity_degs_per_sec" : {"type": "number"},
+                           "setpoint_velocity_degs_per_sec" : {"type": "number"},
+                           "measured_velocity_degs_per_sec" : {"type": "number"},
+                           "acceleration_degs_per_sec_sqr" : {"type": "number"},
+                           "measured_current_amps" : {"type": "number"},
                         },
                        "axis1": {
                            "dist_to_target_arcsec" : {"type": "number"},
@@ -68,6 +77,14 @@ class lvmpwi(AMQPActor):
                            "position_degs" : {"type": "number"},
                            "rms_error_arcsec" : {"type": "number"},
                            "servo_error_arcsec" : {"type": "number"},
+                           "min_mech_position_degs" : {"type": "number"},
+                           "max_mech_position_degs" : {"type": "number"},
+                           "target_mech_position_degs" : {"type": "number"},
+                           "max_velocity_degs_per_sec" : {"type": "number"},
+                           "setpoint_velocity_degs_per_sec" : {"type": "number"},
+                           "measured_velocity_degs_per_sec" : {"type": "number"},
+                           "acceleration_degs_per_sec_sqr" : {"type": "number"},
+                           "measured_current_amps" : {"type": "number"},
                         },
                        "model": {
                            "filename" : {"type": "string"},
@@ -119,7 +136,9 @@ class lvmpwi(AMQPActor):
         instance.log.debug(str(instance.config))
 
         pwi = PWI4()
-         
+
+        self.statusTask = self.loop.create_task(statusTick(self, 1.0))
+
         instance.log.debug(str(type(pwi)))
         
         instance.parser_args = [ pwi ]

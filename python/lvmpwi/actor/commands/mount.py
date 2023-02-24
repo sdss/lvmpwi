@@ -24,16 +24,16 @@ async def statusPWI(pwi: PWI4, lock: asyncio.Lock):
     async with lock:
         return pwi.status()
 
-async def statusTick(command, pwi: PWI4, delta_time):
+async def statusTick(actor, pwi: PWI4, delta_time):
 
-    lock = command.actor.statusLock
+    lock = actor.statusLock
 
     while True:
         try:
             if not lock.locked():
                 status = await statusPWI(pwi, lock)
 
-                command.actor.write(
+                actor.write(
                         "i",
                         {
                             "is_slewing": status.mount.is_slewing,
@@ -53,14 +53,14 @@ async def statusTick(command, pwi: PWI4, delta_time):
 
         except Exception as e:
 
-            command.actor.write("i", {"error": e})
+            actor.write("i", {"error": e})
 
         await asyncio.sleep(delta_time)
 
 
 @parser.command("setConnected")
 @click.argument("enable", type=bool)
-@click.option("--statusTick", type=float, default=1)
+#@click.option("--statusTick", type=float, default=1)
 async def setConnected(command: Command, pwi: PWI4, enable:bool, statustick:float):
     """set mount connected true/false """
 
@@ -71,8 +71,8 @@ async def setConnected(command: Command, pwi: PWI4, enable:bool, statustick:floa
 
         if enable:
             status = pwi.mount_connect()
-            if statustick > 0.0:
-                command.actor.statusTask = command.actor.loop.create_task(statusTick(command, pwi, statustick))
+#            if statustick > 0.0:
+#                command.actor.statusTask = command.actor.loop.create_task(statusTick(command.actor, pwi, statustick))
         else:
             status = pwi.mount_disconnect()
 
