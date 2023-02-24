@@ -44,8 +44,10 @@ RUN apt install -y python3-pip
 RUN pip3 install sdss-lvmpwi
 
 #ENV PWI_VERSION=4.0.9beta21
-ENV PWI_VERSION=4.0.11beta50
+#ENV PWI_VERSION=4.0.11beta50
 #ENV PWI_VERSION=4.0.13final
+ENV PWI_VERSION=4.0.14final
+
 ENV PWI_PATH=/opt/pwi-$PWI_VERSION
 
 RUN mkdir -p $PWI_PATH && \
