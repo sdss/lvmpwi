@@ -110,8 +110,9 @@ class lvmpwi(AMQPActor):
         pwi = self.parser_args[0]
         self.log.debug(f"{type(self.parser_args)}")
 
-        self.statusTask = None
         self.statusLock = asyncio.Lock()
+        self.statusTask = self.loop.create_task(statusTick(self, 1.0))
+
 
         status = pwi.status()
         self.log.debug(f"is_connected {status.mount.is_connected}")
@@ -137,7 +138,6 @@ class lvmpwi(AMQPActor):
 
         pwi = PWI4()
 
-        self.statusTask = self.loop.create_task(statusTick(self, 1.0))
 
         instance.log.debug(str(type(pwi)))
         
