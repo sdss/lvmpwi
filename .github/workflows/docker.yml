@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - '[0-9]+.[0-9]+.[0-9]+' # Exclude pre-releases
+    branches:
+      - gallegoj
 
 jobs:
   docker:
@@ -46,7 +48,6 @@ jobs:
           tags: |
             ghcr.io/${{ steps.set-tags.outputs.TAGS }}
             ghcr.io/${{ steps.set-tags.outputs.TAG_LATEST }}
-#          context: .
           file: ./container/Dockerfile
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
