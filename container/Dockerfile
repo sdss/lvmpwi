@@ -16,7 +16,7 @@ RUN apt-get update && \
     DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends software-properties-common && \
     apt install -y gnupg ca-certificates && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
-    echo "deb https://download.mono-project.com/repo/ubuntu stable-focal main" | tee /etc/apt/sources.list.d/mono-official-stable.list 
+    echo "deb https://download.mono-project.com/repo/ubuntu stable-focal main" | tee /etc/apt/sources.list.d/mono-official-stable.list
 
 
 # RUN dpkg --add-architecture i386 && \
@@ -54,7 +54,7 @@ RUN mkdir -p $PWI_PATH && \
     wget http://planewave.com/files/software/PWI4/pwi-$PWI_VERSION.tar.gz && \
     (cd ${PWI_PATH%/*} && tar xzf /pwi-$PWI_VERSION.tar.gz) && \
     rm /pwi-$PWI_VERSION.tar.gz
-    
+
 ENV PWI_AUTOTUNER_VERSION=1.0.3beta1
 ENV PWI_AUTOTUNER_PATH=/opt/autotuner-$PWI_AUTOTUNER_VERSION
 # beta version of autotuner without 3D
@@ -67,14 +67,16 @@ RUN mkdir -p $PWI_AUTOTUNER_PATH && \
     echo 'mono AutoTuner.exe --nogl' >> $PWI_AUTOTUNER_PATH/run-autotuner_nogl && \
     chmod 755 $PWI_AUTOTUNER_PATH/run-autotuner_nogl
 
-        
+
 #EXPOSE 3389/tcp
 EXPOSE 5900/tcp
 
 WORKDIR /root
 
+RUN mkdir -p lvm/lvmpwi
+
+COPY . lvm/lvmpwi
 COPY ./container/run-pwi.sh .
 COPY ./container/novnc_server .
 
 CMD ["/root/run-pwi.sh"]
-
