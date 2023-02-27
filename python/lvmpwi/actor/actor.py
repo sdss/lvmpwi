@@ -60,6 +60,7 @@ class lvmpwi(AMQPActor):
                            "dist_to_target_arcsec" : {"type": "number"},
                            "is_enabled" : {"type": "boolean"},
                            "position_degs" : {"type": "number"},
+                           "position_timestamp" : {"type": "number"},
                            "rms_error_arcsec" : {"type": "number"},
                            "servo_error_arcsec" : {"type": "number"},
                            "min_mech_position_degs" : {"type": "number"},
@@ -70,11 +71,13 @@ class lvmpwi(AMQPActor):
                            "measured_velocity_degs_per_sec" : {"type": "number"},
                            "acceleration_degs_per_sec_sqr" : {"type": "number"},
                            "measured_current_amps" : {"type": "number"},
+
                         },
                        "axis1": {
                            "dist_to_target_arcsec" : {"type": "number"},
                            "is_enabled" : {"type": "boolean"},
                            "position_degs" : {"type": "number"},
+                           "position_timestamp" : {"type": "number"},
                            "rms_error_arcsec" : {"type": "number"},
                            "servo_error_arcsec" : {"type": "number"},
                            "min_mech_position_degs" : {"type": "number"},
@@ -112,7 +115,6 @@ class lvmpwi(AMQPActor):
 
         status = pwi.status()
         self.log.debug(f"is_connected {status.mount.is_connected}")
-
 
         self.statusLock = asyncio.Lock()
         self.statusTask = self.loop.create_task(statusTick(self, pwi, 1.0))

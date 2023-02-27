@@ -48,6 +48,14 @@ async def statusTick(actor, pwi: PWI4, delta_time):
                             "field_angle_here_degs": status.mount.field_angle_here_degs,
                             "field_angle_rate_at_target_degs_per_sec": status.mount.field_angle_rate_at_target_degs_per_sec,
                             "field_angle_at_target_degs": status.mount.field_angle_at_target_degs,
+                            "axis0": {
+                                'position_degs': status.mount.axis0.position_degs,
+                                'position_timestamp': status.mount.axis0.position_timestamp_str,
+                            },
+                            "axis1": {
+                                'position_degs': status.mount.axis1.position_degs,
+                                'position_timestamp': status.mount.axis1.position_timestamp_str,
+                            },
                         }
                 )
 
