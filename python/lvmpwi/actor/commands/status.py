@@ -53,12 +53,16 @@ async def status(command: Command, pwi: PWI4):
                 'position_degs': status.mount.axis1.position_degs,
                 'rms_error_arcsec': status.mount.axis1.rms_error_arcsec,
                 'servo_error_arcsec': status.mount.axis1.servo_error_arcsec,
+                'position_degs': status.mount.axis0.position_degs,
+                'position_timestamp': status.mount.axis0.position_timestamp_str,
             },
             model = {
                 'filename': status.mount.model.filename,
                 'num_points_enabled': status.mount.model.num_points_enabled,
                 'num_points_total': status.mount.model.num_points_total,
                 'rms_error_arcsec': status.mount.model.rms_error_arcsec,
+                'position_degs': status.mount.axis1.position_degs,
+                'position_timestamp': status.mount.axis1.position_timestamp_str,
             },
 
             geometry=status.mount.geometry,
