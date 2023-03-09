@@ -41,8 +41,6 @@ RUN apt-get update \
 
 RUN apt install -y python3-pip
 
-RUN pip3 install sdss-lvmpwi
-
 #ENV PWI_VERSION=4.0.9beta21
 #ENV PWI_VERSION=4.0.11beta50
 #ENV PWI_VERSION=4.0.13final
@@ -78,5 +76,7 @@ RUN mkdir -p lvm/lvmpwi
 COPY . lvm/lvmpwi
 COPY ./container/run-pwi.sh .
 COPY ./container/novnc_server .
+
+RUN cd lvm/lvmpwi && pip3 install .
 
 CMD ["/root/run-pwi.sh"]
