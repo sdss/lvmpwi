@@ -10,10 +10,16 @@ import importlib
 import os
 
 import click
-from clu.parsers.click import CluGroup, help_, ping, version, get_schema
-
-from clu.parsers.click import command_parser
 from clu.command import Command
+from clu.parsers.click import (
+    CluGroup,
+    command_parser,
+    get_command_model,
+    get_schema,
+    help_,
+    ping,
+    version,
+)
 
 
 @click.group(cls=CluGroup)
@@ -25,16 +31,19 @@ parser.add_command(ping)
 parser.add_command(version)
 parser.add_command(help_)
 parser.add_command(get_schema)
+parser.add_command(get_command_model)
 
 
 # TODO: fix me with cluplus
-@command_parser.command(name='__commands')
+@command_parser.command(name="__commands")
 @click.pass_context
 def __commands(ctx, command: Command, *args):
     """Returns all commands."""
 
-    # we have to use the help key for the command list, dont want to change the standard model.
-    command.finish(help=[k for k in ctx.command.commands.keys() if k[:2] != '__'])
+    # we have to use the help key for the command list, dont
+    # want to change the standard model.
+    command.finish(help=[k for k in ctx.command.commands.keys() if k[:2] != "__"])
+
 
 parser.add_command(__commands)
 
