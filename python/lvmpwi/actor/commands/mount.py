@@ -446,6 +446,7 @@ async def waitUntilAxisErrorIsBelowLimit(command: Command, pwi: PWI4, axis_error
 @click.option("--transverse_set_rate_arcsec_per_sec", type=float, default=nan)
 # Tolerated axis error (option)
 @click.option("--axis_error", type=float, default=0.4)
+@click.option("--timeout", type=float, default=None, help="Timeout for applying the offset.")
 async def offset(command: Command, pwi: PWI4, **kwargs):
     """mount offset
 
@@ -475,10 +476,15 @@ async def offset(command: Command, pwi: PWI4, **kwargs):
         )
         checkIfMountCanMove(status)
 
-        await waitUntilAxisErrorIsBelowLimit(command, pwi, kwargs["axis_error"])
+        try:
+            await asyncio.wait_for(
+                waitUntilAxisErrorIsBelowLimit(command, pwi, kwargs["axis_error"]),
+                timeout=kwargs['timeout'])
+        except asyncio.TimeoutError:
+            command.warning(text='Timed out applying offset.')
 
         status = await statusPWI(pwi, command.actor.statusLock)
-        return command.finish(
+        return command.finish(/
             is_tracking=status.mount.is_tracking,
             is_connected=status.mount.is_connected,
             is_slewing=status.mount.is_slewing,
