@@ -484,7 +484,7 @@ async def offset(command: Command, pwi: PWI4, **kwargs):
             command.warning(text='Timed out applying offset.')
 
         status = await statusPWI(pwi, command.actor.statusLock)
-        return command.finish(/
+        return command.finish(
             is_tracking=status.mount.is_tracking,
             is_connected=status.mount.is_connected,
             is_slewing=status.mount.is_slewing,
