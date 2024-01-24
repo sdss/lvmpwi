@@ -69,7 +69,7 @@ start_pwi4() {
     do
        ./run-pwi4
        sleep 2
-       /opt/autotuner-1.0.3beta1/run-autotuner_nogl
+       mono /opt/autotuner-1.0.3beta1/AutoTuner.exe --nogl
        sleep 2
     done
 
