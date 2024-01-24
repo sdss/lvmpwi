@@ -47,6 +47,7 @@ RUN apt install -y python3-pip
 ENV PWI_VERSION=4.0.14final
 
 ENV PWI_PATH=/opt/pwi-$PWI_VERSION
+ENV MESA_GL_VERSION_OVERRIDE=4.5
 
 RUN mkdir -p $PWI_PATH && \
     wget http://planewave.com/files/software/PWI4/pwi-$PWI_VERSION.tar.gz && \
