@@ -12,6 +12,7 @@ export PYTHONPATH=$(ls -1 -d ${LVM_ROOT}/lvm/*/python ${LVM_ROOT}/${LVM_ACTOR}/p
 
 echo $(${PYTHON} -c "import ${LVM_ACTOR} as _; print(_.__path__[0])")
 
+export MESA_GL_VERSION_OVERRIDE=4.5
 
 start_actor() {
 
@@ -24,8 +25,8 @@ start_actor() {
     # echo ${LVM_ACTOR_CONFIG_ABS}
 
     sed "s/lvm.pwi/$PWI_NAME/" < ${LVM_ACTOR_PATH}/python/${LVM_ACTOR}/etc/lvm.pwi.yml > ${LVM_ACTOR_CONFIG_ABS}
-  
-    while true 
+
+    while true
     do
        sleep 2
        ${PYTHON} ${LVM_ACTOR_PATH}/python/${LVM_ACTOR}/__main__.py --config ${LVM_ACTOR_CONFIG_ABS} ${LVM_ACTOR_ARGS} start --debug
@@ -49,7 +50,7 @@ setup_pwi4() {
     if [ ! -f  ${LVM_CONFIG_PATH}/Settings/PWI4.cfg ]; then
         cp ${LVM_CONFIG_PATH}/../pwi/Settings/PWI4.cfg ${LVM_CONFIG_PATH}/Settings/PWI4.cfg
     fi
-    if [ $PWI_SIMULATOR ]; then 
+    if [ $PWI_SIMULATOR ]; then
         sed  -i "s/elmo/simulator/" ${LVM_CONFIG_PATH}/Settings/PWI4.cfg
     else
         sed  -i "s/simulator/elmo/" ${LVM_CONFIG_PATH}/Settings/PWI4.cfg
@@ -64,7 +65,7 @@ setup_pwi4() {
 
 start_pwi4() {
     cd ${PWI_PATH}
-    while true 
+    while true
     do
        ./run-pwi4
        sleep 2
@@ -79,7 +80,7 @@ max_pwi4() {
 
 use_vnc() {
 #    echo -e "${PASSWD:-lvmt}\n${PASSWD:-lvmt}" | passwd
-#    cp ${LVM_ACTOR_PATH}/container/xrdp.ini /etc/xrdp/ 
+#    cp ${LVM_ACTOR_PATH}/container/xrdp.ini /etc/xrdp/
     Xvnc :0 -geometry $PWI_GEOM &
     export DISPLAY=:0
     fluxbox &
@@ -93,8 +94,8 @@ if [ -z $DISPLAY ]; then
 #    max_pwi4 &
 fi
 
-start_actor & 
+start_actor &
 
-start_pwi4 & 
+start_pwi4 &
 
 trap : TERM INT; sleep infinity & wait
