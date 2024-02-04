@@ -27,14 +27,14 @@ class lvmpwi(AMQPActor):
     """
 
     parser = pwi_command_parser
-    
+
     def __init__(
             self,
             *args,
             **kwargs
     ):
         super().__init__(*args, **kwargs)
-        
+
         self.schema = {
                     "type": "object",
                     "properties": {
@@ -45,7 +45,7 @@ class lvmpwi(AMQPActor):
 
                        "ra_j2000_hours" : {"type": "number"},
                        "dec_j2000_degs" : {"type": "number"},
-                       
+
                        "ra_apparent_hours" : {"type": "number"},
                        "dec_apparent_degs" : {"type": "number"},
 
@@ -57,44 +57,55 @@ class lvmpwi(AMQPActor):
                        "field_angle_rate_at_target_degs_per_sec" : {"type": "number"},
 
                        "axis0": {
-                           "dist_to_target_arcsec" : {"type": "number"},
-                           "is_enabled" : {"type": "boolean"},
-                           "position_degs" : {"type": "number"},
-                           "position_timestamp" : {"type": "number"},
-                           "rms_error_arcsec" : {"type": "number"},
-                           "servo_error_arcsec" : {"type": "number"},
-                           "min_mech_position_degs" : {"type": "number"},
-                           "max_mech_position_degs" : {"type": "number"},
-                           "target_mech_position_degs" : {"type": "number"},
-                           "max_velocity_degs_per_sec" : {"type": "number"},
-                           "setpoint_velocity_degs_per_sec" : {"type": "number"},
-                           "measured_velocity_degs_per_sec" : {"type": "number"},
-                           "acceleration_degs_per_sec_sqr" : {"type": "number"},
-                           "measured_current_amps" : {"type": "number"},
-
+                            "type": "object",
+                            "properties": {
+                                "dist_to_target_arcsec" : {"type": "number"},
+                                "is_enabled" : {"type": "boolean"},
+                                "position_degs" : {"type": "number"},
+                                "position_timestamp" : {"type": "string"},
+                                "rms_error_arcsec" : {"type": "number"},
+                                "servo_error_arcsec" : {"type": "number"},
+                                "min_mech_position_degs" : {"type": "number"},
+                                "max_mech_position_degs" : {"type": "number"},
+                                "target_mech_position_degs" : {"type": "number"},
+                                "max_velocity_degs_per_sec" : {"type": "number"},
+                                "setpoint_velocity_degs_per_sec" : {"type": "number"},
+                                "measured_velocity_degs_per_sec" : {"type": "number"},
+                                "acceleration_degs_per_sec_sqr" : {"type": "number"},
+                                "measured_current_amps" : {"type": "number"},
+                            },
+                            "additionalProperties": False,
                         },
                        "axis1": {
-                           "dist_to_target_arcsec" : {"type": "number"},
-                           "is_enabled" : {"type": "boolean"},
-                           "position_degs" : {"type": "number"},
-                           "position_timestamp" : {"type": "number"},
-                           "rms_error_arcsec" : {"type": "number"},
-                           "servo_error_arcsec" : {"type": "number"},
-                           "min_mech_position_degs" : {"type": "number"},
-                           "max_mech_position_degs" : {"type": "number"},
-                           "target_mech_position_degs" : {"type": "number"},
-                           "max_velocity_degs_per_sec" : {"type": "number"},
-                           "setpoint_velocity_degs_per_sec" : {"type": "number"},
-                           "measured_velocity_degs_per_sec" : {"type": "number"},
-                           "acceleration_degs_per_sec_sqr" : {"type": "number"},
-                           "measured_current_amps" : {"type": "number"},
+                            "type": "object",
+                            "properties": {
+                                "dist_to_target_arcsec" : {"type": "number"},
+                                "is_enabled" : {"type": "boolean"},
+                                "position_degs" : {"type": "number"},
+                                "position_timestamp" : {"type": "string"},
+                                "rms_error_arcsec" : {"type": "number"},
+                                "servo_error_arcsec" : {"type": "number"},
+                                "min_mech_position_degs" : {"type": "number"},
+                                "max_mech_position_degs" : {"type": "number"},
+                                "target_mech_position_degs" : {"type": "number"},
+                                "max_velocity_degs_per_sec" : {"type": "number"},
+                                "setpoint_velocity_degs_per_sec" : {"type": "number"},
+                                "measured_velocity_degs_per_sec" : {"type": "number"},
+                                "acceleration_degs_per_sec_sqr" : {"type": "number"},
+                                "measured_current_amps" : {"type": "number"},
+                            },
+                            "additionalProperties": False,
                         },
                        "model": {
-                           "filename" : {"type": "string"},
-                           "num_points_enabled" : {"type": "number"},
-                           "position_degs" : {"type": "number"},
-                           "num_points_total" : {"type": "number"},
-                           "rms_error_arcsec" : {"type": "number"},
+                            "type": "object",
+                            "properties": {
+                                "filename" : {"type": "string"},
+                                "num_points_enabled" : {"type": "number"},
+                                "position_degs" : {"type": "number"},
+                                "num_points_total" : {"type": "number"},
+                                "rms_error_arcsec" : {"type": "number"},
+                            },
+                            "additionalProperties": False,
                         },
                        "geometry" : {"type": "number"},
                      },
@@ -107,7 +118,7 @@ class lvmpwi(AMQPActor):
         await super().start()
 
         assert len(self.parser_args) == 1
-       
+
         self.log.debug(f"Start pwi ...")
 
         pwi = self.parser_args[0]
@@ -135,14 +146,14 @@ class lvmpwi(AMQPActor):
 
         assert isinstance(instance, lvmpwi)
         assert isinstance(instance.config, dict)
-        
+
         instance.log.debug(str(instance.config))
 
         pwi = PWI4()
 
 
         instance.log.debug(str(type(pwi)))
-        
+
         instance.parser_args = [ pwi ]
 
         return instance

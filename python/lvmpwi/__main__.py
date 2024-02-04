@@ -44,9 +44,9 @@ def lvmpwi(ctx, config_file, verbose, rmq_url):
 async def actor(ctx):
     """Runs the actor."""
 
-    default_config_file = os.path.join(os.path.dirname(__file__), "etc/lvmpwi.yml")
+    default_config_file = os.path.join(os.path.dirname(__file__), "etc/lvm.pwi.yml")
     config_file = ctx.obj["config_file"] or default_config_file
-    
+
     lvmpwi_obj = PwiActor.from_config(
         config_file,
         url=ctx.obj["rmq_url"],
