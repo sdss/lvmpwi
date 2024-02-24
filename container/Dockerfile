@@ -12,12 +12,12 @@ MAINTAINER Florian Briegel, briegel@mpia.de
 
 # podman run --rm -ti --name lvm-sci-pwi -v ~lvm/workspace/lvm:/root/lvm:Z -e PWI_NAME=lvm.sci.pwi -e PWI_GEOM=1200x900 -e LVM_ACTOR_ARGS="--verbose --rmq_url=amqp://guest:guest@192.168.1.1:5672/" -p 8091:6080 ghcr.io/sdss/lvmpwi:latest
 
-RUN apt-get update && \
-    DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends software-properties-common && \
-    apt install -y gnupg ca-certificates && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
-    echo "deb https://download.mono-project.com/repo/ubuntu stable-focal main" | tee /etc/apt/sources.list.d/mono-official-stable.list
-
+RUN apt update && \
+    DEBIAN_FRONTEND="noninteractive" apt install -y software-properties-common && \
+    apt install ca-certificates gnupg && \
+    gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
+    echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | tee /etc/apt/sources.list.d/mono-official-stable.list && \
+    apt update
 
 # RUN dpkg --add-architecture i386 && \
 #     wget -qO- https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add - && \
@@ -25,8 +25,7 @@ RUN apt-get update && \
 #     apt install -y --install-recommends winehq-stable winetricks
 
 
-RUN apt-get update \
-    && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
+RUN DEBIAN_FRONTEND="noninteractive" apt install -y \
         wget \
         wmctrl \
         xfonts-base xfonts-75dpi xfonts-100dpi \
