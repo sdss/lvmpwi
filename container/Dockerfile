@@ -35,6 +35,7 @@ RUN DEBIAN_FRONTEND="noninteractive" apt install -y \
         fluxbox \
         xrdp \
         mono-devel \
+        libgtk2.0-0 \
         mono-basic-dbg
 
 RUN apt install -y python3-pip
@@ -43,7 +44,7 @@ RUN apt install -y python3-pip
 #ENV PWI_VERSION=4.0.11beta50
 #ENV PWI_VERSION=4.0.13final
 # ENV PWI_VERSION=4.0.14final
-ENV PWI_VERSION=4.1.4final
+ENV PWI_VERSION=4.1.2final
 
 ENV PWI_PATH=/opt/pwi-$PWI_VERSION
 ENV MESA_GL_VERSION_OVERRIDE=4.5
