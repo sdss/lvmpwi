@@ -34,7 +34,6 @@ RUN DEBIAN_FRONTEND="noninteractive" apt install -y \
         eterm \
         fluxbox \
         xrdp \
-        libgtk2.0 \
         mono-devel \
         mono-basic-dbg
 
