@@ -9,8 +9,6 @@ from __future__ import annotations
 
 import asyncio
 
-from contextlib import suppress
-
 from clu.actor import AMQPActor
 
 from lvmpwi import __version__
@@ -131,6 +129,7 @@ class lvmpwi(AMQPActor):
 
         self.log.debug(f"is_connected {status.mount.is_connected}")
 
+        self.loop = asyncio.get_running_loop()
         self.statusLock = asyncio.Lock()
         self.statusTask = self.loop.create_task(statusTick(self, pwi, 1.0))
 
