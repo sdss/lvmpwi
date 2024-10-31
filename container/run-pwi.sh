@@ -67,7 +67,7 @@ start_pwi4() {
     cd ${PWI_PATH}
     while true
     do
-    #    ./run-pwi4
+       ./run-pwi4
        sleep 2
     done
 
