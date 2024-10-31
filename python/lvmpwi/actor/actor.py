@@ -125,6 +125,10 @@ class lvmpwi(AMQPActor):
         self.log.debug(f"{type(self.parser_args)}")
 
         status = pwi.status()
+        if not status.mount.is_connected:
+            pwi.mount_connect()
+            status = pwi.status()
+
         self.log.debug(f"is_connected {status.mount.is_connected}")
 
         self.statusLock = asyncio.Lock()
