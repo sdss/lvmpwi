@@ -28,14 +28,14 @@ RUN apt-get update && \
 RUN apt-get update \
     && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
         wget \
-        # wmctrl \
+        wmctrl \
         # xfonts-base xfonts-75dpi xfonts-100dpi \
         tightvncserver \
         novnc \
-        # eterm \
-        # fluxbox \
-        # xrdp \
-        # libgtk2.0 \
+        eterm \
+        fluxbox \
+        xrdp \
+        libgtk2.0 \
         mono-devel \
         mono-basic-dbg
 
