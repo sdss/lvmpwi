@@ -15,8 +15,8 @@ MAINTAINER Florian Briegel, briegel@mpia.de
 RUN apt-get update && \
     DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends software-properties-common && \
     apt install -y gnupg ca-certificates && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
-    echo "deb https://download.mono-project.com/repo/ubuntu stable-focal main" | tee /etc/apt/sources.list.d/mono-official-stable.list
+    gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
+    echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
 
 
 # RUN dpkg --add-architecture i386 && \
@@ -47,7 +47,7 @@ RUN apt install -y python3-pip
 ENV PWI_VERSION=4.0.99beta27
 
 ENV PWI_PATH=/opt/pwi-$PWI_VERSION
-ENV MESA_GL_VERSION_OVERRIDE=4.5
+# ENV MESA_GL_VERSION_OVERRIDE=4.5
 
 RUN mkdir -p $PWI_PATH && \
     wget http://planewave.com/files/software/PWI4/pwi-$PWI_VERSION.tar.gz && \
