@@ -29,7 +29,7 @@ RUN apt-get update \
     && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
         wget \
         wmctrl \
-        # xfonts-base xfonts-75dpi xfonts-100dpi \
+        xfonts-base xfonts-75dpi xfonts-100dpi \
         tightvncserver \
         novnc \
         eterm \
