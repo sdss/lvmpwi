@@ -44,7 +44,7 @@ RUN apt-get update \
         python3
 
 
-RUN apt install -y python3-pipx
+# RUN apt install -y python3-pipx
 
 #ENV PWI_VERSION=4.0.9beta21
 #ENV PWI_VERSION=4.0.11beta50
