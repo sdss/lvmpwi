@@ -38,8 +38,6 @@ RUN apt-get update \
         mono-devel \
         mono-basic-dbg \
         xfce4 xfce4-goodies \
-        tigervnc-standalone-server \
-        tigervnc-common \
         dbus-x11
 
 RUN apt install -y python3-pip
