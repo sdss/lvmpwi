@@ -37,7 +37,7 @@ RUN apt-get update \
         xrdp \
         libgtk2.0 \
         mono-devel \
-        mono-basic-dbg
+        mono-basic-dbg \
         xfce4 xfce4-goodies \
         tigervnc-standalone-server
 
