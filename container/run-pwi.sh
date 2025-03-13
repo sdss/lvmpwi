@@ -81,11 +81,22 @@ max_pwi4() {
 use_vnc() {
 #    echo -e "${PASSWD:-lvmt}\n${PASSWD:-lvmt}" | passwd
 #    cp ${LVM_ACTOR_PATH}/container/xrdp.ini /etc/xrdp/
-    Xvnc :0 -geometry $PWI_GEOM &
+
+    cat > ~/.vnc/xstartup<< EOF
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+startxfce4
+EOF
+
+    chmod +x ~/.vnc/xstartup
+    /usr/bin/vncserver -fg -depth 24 -geometry 1920x1080 -port 5900 -SecurityTypes None -localhost no :0
+
     export DISPLAY=:0
+
     unset SESSION_MANAGER
     unset DBUS_SESSION_BUS_ADDRESS
     startxfce4 &
+
     (cd /usr/share/novnc/ && ~/novnc_server &)
 }
 

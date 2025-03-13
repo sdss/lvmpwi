@@ -30,7 +30,6 @@ RUN apt-get update \
         wget \
         wmctrl \
         xfonts-base xfonts-75dpi xfonts-100dpi \
-        tightvncserver \
         novnc \
         eterm \
         xrdp \
@@ -38,7 +37,11 @@ RUN apt-get update \
         mono-devel \
         mono-basic-dbg \
         xfce4 xfce4-goodies \
-        dbus-x11
+        dbus-x11 \
+        xrdb \
+        iceauth \
+        tigervnc tigervnc-standalone-server tigervnc-common
+
 
 RUN apt install -y python3-pip
 
