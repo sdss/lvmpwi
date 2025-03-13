@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 
 ## Get some karma ##
 MAINTAINER Florian Briegel, briegel@mpia.de
@@ -48,7 +48,7 @@ RUN apt install -y python3-pip
 ENV PWI_VERSION=4.1.6final
 
 ENV PWI_PATH=/opt/pwi-$PWI_VERSION
-# ENV MESA_GL_VERSION_OVERRIDE=4.5
+ENV MESA_GL_VERSION_OVERRIDE=4.5
 
 RUN mkdir -p $PWI_PATH && \
     wget http://planewave.com/files/software/PWI4/pwi-$PWI_VERSION.tar.gz && \

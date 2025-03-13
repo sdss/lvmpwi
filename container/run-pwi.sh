@@ -12,7 +12,7 @@ export PYTHONPATH=$(ls -1 -d ${LVM_ROOT}/lvm/*/python ${LVM_ROOT}/${LVM_ACTOR}/p
 
 echo $(${PYTHON} -c "import ${LVM_ACTOR} as _; print(_.__path__[0])")
 
-# export MESA_GL_VERSION_OVERRIDE=4.5
+export MESA_GL_VERSION_OVERRIDE=4.5
 
 start_actor() {
 
