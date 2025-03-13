@@ -1,35 +1,26 @@
 #!/usr/bin/bash
 
-PYTHON=/usr/bin/python3
-
 LVM_ROOT=${HOME}
-#LVM_PATH=/root/lvm
-
 LVM_ACTOR="lvmpwi"
 
 LVM_ACTOR_PATH=$(ls -1 -d ${LVM_ROOT}/lvm/${LVM_ACTOR} ${LVM_ROOT}/${LVM_ACTOR} 2> /dev/null)
-export PYTHONPATH=$(ls -1 -d ${LVM_ROOT}/lvm/*/python ${LVM_ROOT}/${LVM_ACTOR}/python 2>/dev/null | tr "\n" ":")
-
-echo $(${PYTHON} -c "import ${LVM_ACTOR} as _; print(_.__path__[0])")
 
 export MESA_GL_VERSION_OVERRIDE=4.5
 
 start_actor() {
 
     if [ $LVM_RMQ_HOST ]; then
-        # echo $LVM_RMQ_HOST
         LVM_ACTOR_ARGS="--rmq_url amqp://guest:guest@${LVM_RMQ_HOST}:5672/"
     fi
 
     LVM_ACTOR_CONFIG_ABS="${LVM_ACTOR_PATH}/python/${LVM_ACTOR}/etc/${LVM_ACTOR_CONFIG:-$PWI_NAME}.yml"
-    # echo ${LVM_ACTOR_CONFIG_ABS}
 
     sed "s/lvm.pwi/$PWI_NAME/" < ${LVM_ACTOR_PATH}/python/${LVM_ACTOR}/etc/lvm.pwi.yml > ${LVM_ACTOR_CONFIG_ABS}
 
     while true
     do
        sleep 2
-       ${PYTHON} ${LVM_ACTOR_PATH}/python/${LVM_ACTOR}/__main__.py --config ${LVM_ACTOR_CONFIG_ABS} ${LVM_ACTOR_ARGS} start --debug
+       /root/.local/bin/lvmpwi --config ${LVM_ACTOR_CONFIG_ABS} ${LVM_ACTOR_ARGS} start --debug
     done
 }
 
@@ -89,7 +80,7 @@ startxfce4
 EOF
 
     chmod +x ~/.vnc/xstartup
-    /usr/bin/vncserver -fg -depth 24 -geometry 1920x1080 -port 5900 -SecurityTypes None -localhost no :0
+    /usr/bin/vncserver -fg -depth 24 -geometry $PWI_GEOM -port 5900 -SecurityTypes None -localhost no :0 &
 
     export DISPLAY=:0
 
@@ -107,7 +98,7 @@ if [ -z $DISPLAY ]; then
 #    max_pwi4 &
 fi
 
-# start_actor &
+start_actor &
 
 start_pwi4 &
 

@@ -3,27 +3,11 @@ FROM ubuntu:24.04
 ## Get some karma ##
 MAINTAINER Florian Briegel, briegel@mpia.de
 
-
-# podman  build --tag ubuntu_lvmt_pwi4 --rm lvmt_pwi4
-
-# podman run --rm -ti --name pwi --network=host -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z --device /dev/dri -v ~/.Xauthority:/root/.Xauthority:Z  -e PWI_NAME=pwi localhost/ubuntu_lvmt_pwi
-
-# podman run --rm -ti --name pwi -v /home/briegel/workspace/lvmt/lvmpwi:/root/lvmt:Z -e PWI_NAME=pwi -p 3389 localhost/ubuntu_lvmt_pwi
-
-# podman run --rm -ti --name lvm-sci-pwi -v ~lvm/workspace/lvm:/root/lvm:Z -e PWI_NAME=lvm.sci.pwi -e PWI_GEOM=1200x900 -e LVM_ACTOR_ARGS="--verbose --rmq_url=amqp://guest:guest@192.168.1.1:5672/" -p 8091:6080 ghcr.io/sdss/lvmpwi:latest
-
 RUN apt-get update && \
     DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends software-properties-common && \
     apt install -y gnupg ca-certificates && \
     gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
     echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | tee /etc/apt/sources.list.d/mono-official-stable.list
-
-
-# RUN dpkg --add-architecture i386 && \
-#     wget -qO- https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add - && \
-#     apt-add-repository "deb http://dl.winehq.org/wine-builds/ubuntu/ $(lsb_release -cs) main" && \
-#     apt install -y --install-recommends winehq-stable winetricks
-
 
 RUN apt-get update \
     && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
@@ -41,14 +25,9 @@ RUN apt-get update \
         xrdp \
         x11-xserver-utils \
         tigervnc-standalone-server \
-        python3
+        python3 \
+        pipx
 
-
-# RUN apt install -y python3-pipx
-
-#ENV PWI_VERSION=4.0.9beta21
-#ENV PWI_VERSION=4.0.11beta50
-#ENV PWI_VERSION=4.0.13final
 ENV PWI_VERSION=4.1.6final
 
 ENV PWI_PATH=/opt/pwi-$PWI_VERSION
@@ -71,7 +50,6 @@ RUN mkdir -p $PWI_AUTOTUNER_PATH && \
     echo 'mono AutoTuner.exe --nogl' >> $PWI_AUTOTUNER_PATH/run-autotuner_nogl && \
     chmod 755 $PWI_AUTOTUNER_PATH/run-autotuner_nogl
 
-
 #EXPOSE 3389/tcp
 EXPOSE 5900/tcp
 
@@ -83,6 +61,6 @@ COPY . lvm/lvmpwi
 COPY ./container/run-pwi.sh .
 COPY ./container/novnc_server .
 
-# RUN cd lvm/lvmpwi && pipx install .
+RUN cd lvm/lvmpwi && pipx install .
 
 CMD ["/root/run-pwi.sh"]
