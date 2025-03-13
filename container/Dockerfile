@@ -38,9 +38,9 @@ RUN apt-get update \
         mono-basic-dbg \
         xfce4 xfce4-goodies \
         dbus-x11 \
-        xrdb \
-        iceauth \
-        tigervnc tigervnc-standalone-server tigervnc-common
+        xrdp \
+        x11-server-utils \
+        tigervnc-standalone-server
 
 
 RUN apt install -y python3-pip
