@@ -40,7 +40,8 @@ RUN apt-get update \
         dbus-x11 \
         xrdp \
         x11-xserver-utils \
-        tigervnc-standalone-server
+        tigervnc-standalone-server \
+        python-full
 
 
 RUN apt install -y python3-pip
