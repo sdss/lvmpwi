@@ -41,7 +41,7 @@ RUN apt-get update \
         xrdp \
         x11-xserver-utils \
         tigervnc-standalone-server \
-        python-full
+        python3.11
 
 
 RUN apt install -y python3-pip
