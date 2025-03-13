@@ -80,7 +80,7 @@ startxfce4
 EOF
 
     chmod +x ~/.vnc/xstartup
-    /usr/bin/vncserver -fg -depth 24 -geometry $PWI_GEOM -port 5900 -SecurityTypes None -localhost no :0 &
+    /usr/bin/vncserver -fg -depth 24 -geometry $PWI_GEOM -port 5900 -SecurityTypes None --I-KNOW-THIS-IS-INSECURE -localhost no :0 &
 
     export DISPLAY=:0
 
