@@ -83,6 +83,6 @@ COPY . lvm/lvmpwi
 COPY ./container/run-pwi.sh .
 COPY ./container/novnc_server .
 
-RUN cd lvm/lvmpwi && pip3 --break-system-packages install .
+RUN cd lvm/lvmpwi && pip3 install --break-system-packages .
 
 CMD ["/root/run-pwi.sh"]
