@@ -81,7 +81,7 @@ max_pwi4() {
 use_vnc() {
 #    echo -e "${PASSWD:-lvmt}\n${PASSWD:-lvmt}" | passwd
 #    cp ${LVM_ACTOR_PATH}/container/xrdp.ini /etc/xrdp/
-    # Xvnc :0 -geometry $PWI_GEOM &
+    Xvnc :0 -geometry $PWI_GEOM &
     export DISPLAY=:0
     unset SESSION_MANAGER
     unset DBUS_SESSION_BUS_ADDRESS
