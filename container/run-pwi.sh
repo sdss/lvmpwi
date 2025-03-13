@@ -83,19 +83,21 @@ use_vnc() {
 #    cp ${LVM_ACTOR_PATH}/container/xrdp.ini /etc/xrdp/
     Xvnc :0 -geometry $PWI_GEOM &
     export DISPLAY=:0
-    fluxbox &
+    unset SESSION_MANAGER
+    unset DBUS_SESSION_BUS_ADDRESS
+    startxfce4 &
     (cd /usr/share/novnc/ && ~/novnc_server &)
 }
 
 setup_pwi4
 
-# if [ -z $DISPLAY ]; then
-#     use_vnc
-# #    max_pwi4 &
-# fi
+if [ -z $DISPLAY ]; then
+    use_vnc
+#    max_pwi4 &
+fi
 
-# start_actor &
+start_actor &
 
-# start_pwi4 &
+start_pwi4 &
 
 trap : TERM INT; sleep infinity & wait

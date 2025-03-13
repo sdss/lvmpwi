@@ -33,13 +33,14 @@ RUN apt-get update \
         tightvncserver \
         novnc \
         eterm \
-        fluxbox \
         xrdp \
         libgtk2.0 \
         mono-devel \
         mono-basic-dbg \
         xfce4 xfce4-goodies \
-        tigervnc-standalone-server
+        tigervnc-standalone-server \
+        tigervnc-common \
+        dbus-x11
 
 RUN apt install -y python3-pip
 
