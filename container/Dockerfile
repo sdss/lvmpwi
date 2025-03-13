@@ -83,6 +83,6 @@ COPY . lvm/lvmpwi
 COPY ./container/run-pwi.sh .
 COPY ./container/novnc_server .
 
-RUN cd lvm/lvmpwi && pipx install .
+# RUN cd lvm/lvmpwi && pipx install .
 
 CMD ["/root/run-pwi.sh"]

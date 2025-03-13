@@ -107,7 +107,7 @@ if [ -z $DISPLAY ]; then
 #    max_pwi4 &
 fi
 
-start_actor &
+# start_actor &
 
 start_pwi4 &
 
