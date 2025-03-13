@@ -89,10 +89,10 @@ use_vnc() {
 
 setup_pwi4
 
-if [ -z $DISPLAY ]; then
-    use_vnc
-#    max_pwi4 &
-fi
+# if [ -z $DISPLAY ]; then
+#     use_vnc
+# #    max_pwi4 &
+# fi
 
 # start_actor &
 

@@ -38,6 +38,8 @@ RUN apt-get update \
         libgtk2.0 \
         mono-devel \
         mono-basic-dbg
+        xfce4 xfce4-goodies \
+        tigervnc-standalone-server
 
 RUN apt install -y python3-pip
 
