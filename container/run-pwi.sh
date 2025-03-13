@@ -94,8 +94,8 @@ if [ -z $DISPLAY ]; then
 #    max_pwi4 &
 fi
 
-start_actor &
+# start_actor &
 
-start_pwi4 &
+# start_pwi4 &
 
 trap : TERM INT; sleep infinity & wait
