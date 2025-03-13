@@ -39,7 +39,7 @@ RUN apt-get update \
         xfce4 xfce4-goodies \
         dbus-x11 \
         xrdp \
-        x11-server-utils \
+        x11-xserver-utils \
         tigervnc-standalone-server
 
 
