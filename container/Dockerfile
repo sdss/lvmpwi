@@ -44,7 +44,7 @@ RUN apt-get update \
         python3
 
 
-RUN apt install -y python3-pip
+RUN apt install -y python3-pipx
 
 #ENV PWI_VERSION=4.0.9beta21
 #ENV PWI_VERSION=4.0.11beta50
@@ -83,6 +83,6 @@ COPY . lvm/lvmpwi
 COPY ./container/run-pwi.sh .
 COPY ./container/novnc_server .
 
-RUN cd lvm/lvmpwi && pip3 install --break-system-packages .
+RUN cd lvm/lvmpwi && pipx install .
 
 CMD ["/root/run-pwi.sh"]
